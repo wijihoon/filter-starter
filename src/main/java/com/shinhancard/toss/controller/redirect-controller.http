@@ -1,0 +1,7 @@
+### Redirect with Valid Token
+GET http://localhost:8080/api/redirect
+Cookie: JWT=your-valid-jwt-token
+
+### Redirect with Invalid Token
+GET http://localhost:8080/api/redirect
+Cookie: JWT=invalid-token

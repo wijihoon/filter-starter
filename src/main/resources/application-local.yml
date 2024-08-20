@@ -1,0 +1,53 @@
+spring:
+  config:
+    activate:
+      on-profile: "local"
+
+redis:
+  host: localhost
+  port: 6379
+  password: your_local_redis_password
+  timeout: 2000
+
+jwt:
+  secret: cffb6073014440864761f4a8a55e7d2d730033ccbc7b426039175d28ecdc81c1fc2546a76f47600ad610660f4b4d211f2dbfa875a3f2633cddfc7222f936e060
+  validity: 3600000
+  refresh:
+    validity: 2592000000
+
+cors:
+  allowedOrigins:
+    - "https://alloweddomain.com"
+    - "https://anotheralloweddomain.com"
+  allowed-methods:
+    - "GET"
+    - "POST"
+  allowed-headers:
+    - "Authorization"
+    - "Content-Type"
+  allow-credentials: true
+
+kafka:
+  bootstrapServers: localhost:9092  # 수정된 키 이름
+  producer:
+    keySerializer: org.apache.kafka.common.serialization.StringSerializer
+    valueSerializer: org.apache.kafka.common.serialization.StringSerializer
+    topic:
+      log: log_topic
+
+
+logging:
+  level:
+    root: INFO # 기본 로그 레벨을 INFO로 설정합니다.
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} %file:%line - %msg%n%ex{full}"
+  file:
+    name: logs/application.log # 로그 파일의 경로와 이름을 설정합니다.
+    pattern:
+      file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} %file:%line - %msg%n%ex{full}"
+  requestBody:
+    truncate: true # 요청 본문 자르기 활성화 여부
+  responseBody:
+    truncate: true # 응답 본문 자르기 활성화 여부
+  body:
+    maxSize: 10000 # 본문 자를 때 최대 크기 (바이트 단위)
