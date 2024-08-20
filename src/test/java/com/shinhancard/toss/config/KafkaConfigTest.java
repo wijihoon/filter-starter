@@ -29,12 +29,10 @@ public class KafkaConfigTest {
 	@Autowired
 	private KafkaTemplate<String, String> kafkaTemplate;
 
-	private KafkaProperties kafkaProperties;
-
 	@BeforeEach
 	void setUp() {
 		// KafkaProperties를 모의 객체로 생성
-		kafkaProperties = mock(KafkaProperties.class);
+		KafkaProperties kafkaProperties = mock(KafkaProperties.class);
 		// KafkaProperties의 메서드에 대한 반환 값 설정
 		when(kafkaProperties.getBootstrapServers()).thenReturn("localhost:9092");
 		when(kafkaProperties.getProducer().getKeySerializer()).thenReturn(

@@ -110,7 +110,7 @@ public class OpenAPIProperties {
 		/**
 		 * 연락처 URL입니다.
 		 * <p>
-		 * 기본값은 "http://default-contact-url.com"입니다.
+		 * 기본값은 "<a href="http://default-contact-url.com">...</a>"입니다.
 		 * </p>
 		 */
 		@NotBlank(message = "Contact URL cannot be blank") // 빈 값이 허용되지 않습니다.
@@ -135,7 +135,7 @@ public class OpenAPIProperties {
 		/**
 		 * 서버 URL입니다.
 		 * <p>
-		 * 기본값은 "http://default-server-url.com"입니다.
+		 * 기본값은 "<a href="http://default-server-url.com">...</a>"입니다.
 		 * </p>
 		 */
 		@NotBlank(message = "Server URL cannot be blank") // 빈 값이 허용되지 않습니다.

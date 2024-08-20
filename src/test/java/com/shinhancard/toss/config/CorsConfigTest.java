@@ -94,9 +94,9 @@ public class CorsConfigTest {
 	@Test
 	@DisplayName("자격 증명 포함 여부가 false일 때 CORS 설정 검증")
 	public void corsFilterTest_noCredentials() throws Exception {
-		setupCorsProperties(false, Arrays.asList("http://example.com"),
-			Arrays.asList("GET"),
-			Arrays.asList("Authorization"));
+		setupCorsProperties(false, List.of("http://example.com"),
+			List.of("GET"),
+			List.of("Authorization"));
 
 		mockMvc.perform(options("/").header("Origin", "http://example.com"))
 			.andExpect(status().isOk())
@@ -112,7 +112,7 @@ public class CorsConfigTest {
 	@Test
 	@DisplayName("유효하지 않은 도메인 설정 CORS 필터 테스트")
 	public void corsFilterTest_invalidOrigins() throws Exception {
-		setupCorsProperties(true, Arrays.asList("http://invalid.com"),
+		setupCorsProperties(true, List.of("http://invalid.com"),
 			Arrays.asList("PUT", "PATCH"),
 			Arrays.asList("Content-Type", "Accept"));
 

@@ -42,7 +42,7 @@ class KafkaLogServiceTest {
 	 */
 	@Test
 	@DisplayName("로그 데이터를 Kafka에 성공적으로 전송하는 테스트")
-	void testSendLogSuccess() throws Exception {
+	void testSendLogSuccess() {
 		String logJson = "{\"message\": \"test log\"}"; // 전송할 로그 데이터
 
 		// KafkaProperties의 ProducerProperties와 TopicProperties Mock 설정
@@ -69,7 +69,7 @@ class KafkaLogServiceTest {
 	 */
 	@Test
 	@DisplayName("로그 데이터를 Kafka에 전송할 때 예외가 발생하는 경우를 테스트합니다.")
-	void testSendLogFailure() throws Exception {
+	void testSendLogFailure() {
 		String logJson = "{\"message\": \"test log\"}"; // 전송할 로그 데이터
 
 		// KafkaProperties의 ProducerProperties와 TopicProperties Mock 설정

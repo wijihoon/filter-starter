@@ -41,7 +41,7 @@ class RedisServiceTest {
 	 */
 	@Test
 	@DisplayName("Redis 집합에 값을 추가하고 TTL을 설정하는 테스트")
-	void testAddToSet() throws Exception {
+	void testAddToSet() {
 		String key = "mySet";
 		String value = "value1";
 		long ttl = 3600; // TTL 설정
@@ -63,7 +63,7 @@ class RedisServiceTest {
 	 */
 	@Test
 	@DisplayName("Redis 집합에서 값을 제거하는 테스트")
-	void testRemoveFromSet() throws Exception {
+	void testRemoveFromSet() {
 		String key = "mySet";
 		String value = "value1";
 
@@ -82,7 +82,7 @@ class RedisServiceTest {
 	 */
 	@Test
 	@DisplayName("Redis 집합의 멤버를 확인하는 테스트")
-	void testIsMemberOfSet() throws Exception {
+	void testIsMemberOfSet() {
 		String key = "mySet";
 		String value = "value1";
 
@@ -98,7 +98,7 @@ class RedisServiceTest {
 	 */
 	@Test
 	@DisplayName("Redis 집합의 모든 멤버를 가져오는 테스트")
-	void testGetMembersOfSet() throws Exception {
+	void testGetMembersOfSet() {
 		String key = "mySet";
 		Set<String> members = new HashSet<>();
 		members.add("value1");
@@ -116,7 +116,7 @@ class RedisServiceTest {
 	 */
 	@Test
 	@DisplayName("Redis 키를 삭제하는 테스트")
-	void testDeleteKey() throws Exception {
+	void testDeleteKey() {
 		String key = "myKey";
 
 		// Mock 설정
@@ -134,7 +134,7 @@ class RedisServiceTest {
 	 */
 	@Test
 	@DisplayName("Redis 키의 TTL을 설정하는 테스트")
-	void testSetTTL() throws Exception {
+	void testSetTTL() {
 		String key = "myKey";
 		long ttl = 3600; // TTL 설정
 
@@ -153,7 +153,7 @@ class RedisServiceTest {
 	 */
 	@Test
 	@DisplayName("Redis 키의 TTL을 가져오는 테스트")
-	void testGetTTL() throws Exception {
+	void testGetTTL() {
 		String key = "myKey";
 		long ttl = 3600; // TTL 값
 

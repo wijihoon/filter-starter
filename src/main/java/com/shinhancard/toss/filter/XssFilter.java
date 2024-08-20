@@ -127,19 +127,6 @@ public class XssFilter extends org.springframework.web.filter.GenericFilterBean 
 		}
 
 		/**
-		 * 요청 헤더 이름을 반환합니다.
-		 * <p>
-		 * 헤더 이름 목록을 반환하며, HTML로 인코딩할 필요는 없습니다.
-		 * </p>
-		 *
-		 * @return 헤더 이름 목록
-		 */
-		@Override
-		public Enumeration<String> getHeaderNames() {
-			return super.getHeaderNames();
-		}
-
-		/**
 		 * 요청 헤더 값을 배열로 반환합니다.
 		 * <p>
 		 * 각 헤더의 값은 HTML로 인코딩되어 반환됩니다.

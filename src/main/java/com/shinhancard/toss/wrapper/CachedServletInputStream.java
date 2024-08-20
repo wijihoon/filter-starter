@@ -1,7 +1,6 @@
 package com.shinhancard.toss.wrapper;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 
 import jakarta.servlet.ReadListener;
 import jakarta.servlet.ServletInputStream;
@@ -32,7 +31,7 @@ public class CachedServletInputStream extends ServletInputStream {
 	}
 
 	@Override
-	public int read() throws IOException {
+	public int read() {
 		return inputStream.read();
 	}
 }

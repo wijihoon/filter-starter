@@ -40,9 +40,6 @@ class JwtTokenProviderTest {
 	@InjectMocks
 	private JwtTokenProvider jwtTokenProvider;
 
-	// JWT 서명에 사용할 SecretKey
-	private SecretKey secretKey;
-
 	/**
 	 * 각 테스트가 실행되기 전에 설정 작업을 수행합니다.
 	 * MockitoAnnotations를 통해 Mock 객체들을 초기화하고, SecretKey를 설정합니다.
@@ -53,7 +50,8 @@ class JwtTokenProviderTest {
 		MockitoAnnotations.openMocks(this);
 
 		// 비밀 키를 생성
-		secretKey = Keys.hmacShaKeyFor("test-secret-key".getBytes());
+		// JWT 서명에 사용할 SecretKey
+		SecretKey secretKey = Keys.hmacShaKeyFor("test-secret-key".getBytes());
 
 		// JwtTokenProvider 객체를 수동으로 초기화
 		jwtTokenProvider = new JwtTokenProvider(redisService, jwtTokenProperties);

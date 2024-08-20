@@ -50,12 +50,9 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 	 * @param request  HTTP 요청
 	 * @param response HTTP 응답
 	 * @return 인증 정보
-	 * @throws IOException      입출력 예외
-	 * @throws ServletException 서블릿 예외
 	 */
 	@Override
-	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
-		throws IOException, ServletException {
+	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
 		String token = extractToken(request); // 요청에서 JWT 토큰 추출
 
 		if (token != null) {
@@ -120,12 +117,11 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 	 * @param response HTTP 응답
 	 * @param failed   인증 실패 예외
 	 * @throws IOException      입출력 예외
-	 * @throws ServletException 서블릿 예외
 	 */
 	@Override
 	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
 		AuthenticationException failed)
-		throws IOException, ServletException {
+		throws IOException {
 		log.error("Authentication Failed: {}", failed.getMessage()); // 인증 실패 로그
 		response.sendError(HttpServletResponse.SC_UNAUTHORIZED, failed.getMessage()); // 인증 실패 시 401 상태 코드와 메시지 반환
 	}
