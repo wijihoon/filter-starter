@@ -50,9 +50,6 @@ public class XssFilter extends org.springframework.web.filter.GenericFilterBean 
 
 		// XSS를 필터링하기 위해 요청을 래핑합니다.
 		XssRequestWrapper requestWrapper = new XssRequestWrapper(req);
-
-		// 필터 체인을 계속 진행합니다.
-		chain.doFilter(requestWrapper, res);
 	}
 
 	/**
@@ -87,7 +84,7 @@ public class XssFilter extends org.springframework.web.filter.GenericFilterBean 
 		@Override
 		public String getParameter(String name) {
 			String value = super.getParameter(name);
-			return HtmlUtils.htmlEscape(value); // XSS 공격 방지
+			return (value != null) ? HtmlUtils.htmlEscape(value) : null; // XSS 공격 방지
 		}
 
 		/**
@@ -123,7 +120,7 @@ public class XssFilter extends org.springframework.web.filter.GenericFilterBean 
 		@Override
 		public String getHeader(String name) {
 			String value = super.getHeader(name);
-			return HtmlUtils.htmlEscape(value); // XSS 공격 방지
+			return (value != null) ? HtmlUtils.htmlEscape(value) : null; // null 체크 추가
 		}
 
 		/**

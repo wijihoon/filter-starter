@@ -1,5 +1,7 @@
 package com.shinhancard.toss.io;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.constraints.NotBlank;
 
 /**
@@ -22,4 +24,14 @@ public record JwtRequest(
 	@NotBlank(message = "인가 코드는 비어 있을 수 없습니다") String code,
 	String clientSecret
 ) {
+	private static final ObjectMapper objectMapper = new ObjectMapper();
+
+	@Override
+	public String toString() {
+		try {
+			return objectMapper.writeValueAsString(this);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException("Failed to convert record to JSON", e);
+		}
+	}
 }

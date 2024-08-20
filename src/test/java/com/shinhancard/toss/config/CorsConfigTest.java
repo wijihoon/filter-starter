@@ -28,7 +28,7 @@ import com.shinhancard.toss.properties.CorsProperties;
  * </p>
  */
 @SpringBootTest
-public class CorsConfigTest {
+class CorsConfigTest {
 
 	@Autowired
 	private WebApplicationContext webApplicationContext; // 웹 애플리케이션 컨텍스트
@@ -55,10 +55,10 @@ public class CorsConfigTest {
 	 */
 	@Test
 	@DisplayName("기본 CORS 설정 검증")
-	public void corsFilterTest_defaultSettings() throws Exception {
+	void corsFilterTest_defaultSettings() throws Exception {
 		setupCorsProperties(true, Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
 
-		mockMvc.perform(options("/").header("Origin", "http://example.com"))
+		mockMvc.perform(options("/login-and-redirect").header("Origin", "http://example.com"))
 			.andExpect(status().isOk())
 			.andExpect(header().string("Access-Control-Allow-Origin", "*"))
 			.andExpect(header().string("Access-Control-Allow-Methods", containsString("GET")))
@@ -73,7 +73,7 @@ public class CorsConfigTest {
 	 */
 	@Test
 	@DisplayName("커스텀 CORS 설정 검증")
-	public void corsFilterTest_customSettings() throws Exception {
+	void corsFilterTest_customSettings() throws Exception {
 		setupCorsProperties(true, Arrays.asList("http://example.com", "http://example.org"),
 			Arrays.asList("GET", "POST"),
 			Arrays.asList("Authorization", "Content-Type"));
@@ -93,7 +93,7 @@ public class CorsConfigTest {
 	 */
 	@Test
 	@DisplayName("자격 증명 포함 여부가 false일 때 CORS 설정 검증")
-	public void corsFilterTest_noCredentials() throws Exception {
+	void corsFilterTest_noCredentials() throws Exception {
 		setupCorsProperties(false, List.of("http://example.com"),
 			List.of("GET"),
 			List.of("Authorization"));
@@ -111,7 +111,7 @@ public class CorsConfigTest {
 	 */
 	@Test
 	@DisplayName("유효하지 않은 도메인 설정 CORS 필터 테스트")
-	public void corsFilterTest_invalidOrigins() throws Exception {
+	void corsFilterTest_invalidOrigins() throws Exception {
 		setupCorsProperties(true, List.of("http://invalid.com"),
 			Arrays.asList("PUT", "PATCH"),
 			Arrays.asList("Content-Type", "Accept"));

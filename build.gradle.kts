@@ -25,7 +25,7 @@ val versions = mapOf(
         "slf4j" to "2.0.7", // SLF4J 버전
         "jjwt" to "0.12.6", // JWT 버전
         "swagger" to "1.8.0", // Swagger 버전
-        "junit" to "5.11.0", // JUnit 버전
+        "junit" to "5.10.0", // JUnit 버전
         "mockito" to "5.12.0", // Mockito 버전
         "assertj" to "3.26.0", // AssertJ 버전
         "commons-pool" to "2.12.0", // Commons Pool 버전

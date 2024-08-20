@@ -54,10 +54,16 @@ public class SecurityConfig {
 				UsernamePasswordAuthenticationFilter.class) // XSS 필터를 UsernamePasswordAuthenticationFilter 전에 추가합니다.
 			.authorizeHttpRequests(authorizeRequests ->
 				authorizeRequests
-					.requestMatchers("/api/login")
+					.requestMatchers(
+							"/api/login-and-redirect",
+							"/api/login-with-cookie",
+							"/api/login-with-header",
+							"/api/login-with-body",
+							"/swagger-ui.html",
+							"/swagger-ui/**",
+							"/v3/api-docs/**"
+					)
 					.permitAll() // /api/login 경로는 인증 없이 접근을 허용합니다.
-					.requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**")
-					.permitAll() // Swagger UI와 API 문서에 대한 접근을 허용합니다.
 					.anyRequest()
 					.authenticated() // 나머지 모든 요청은 인증이 필요합니다.
 			)

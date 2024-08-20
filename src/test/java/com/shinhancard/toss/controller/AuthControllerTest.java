@@ -7,7 +7,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,13 +29,14 @@ import com.shinhancard.toss.service.AuthService;
  * 인증 성공, 실패 및 다양한 오류 상황을 검증합니다.
  * </p>
  */
-@WebMvcTest(AuthController.class)
-public class AuthControllerTest {
+@SpringBootTest
+@AutoConfigureMockMvc
+class AuthControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc; // MockMvc 인스턴스 주입
 
-	@Autowired
+	@MockBean
 	private AuthService authService; // AuthService 모킹
 
 	/**
@@ -42,9 +46,9 @@ public class AuthControllerTest {
 	 */
 	@Test
 	@DisplayName("Authenticate user and redirect with valid URL")
-	public void testAuthenticateUserAndRedirectSuccess() throws Exception {
+	void testAuthenticateUserAndRedirectSuccess() throws Exception {
 		// 인증 요청과 응답 설정
-		JwtRequest jwtRequest = new JwtRequest("encryptedCi", "", "http://valid-url.com", "", "");
+		JwtRequest jwtRequest = new JwtRequest("", "", "https://www.naver.com/", "", "");
 		JwtResponse jwtResponse = new JwtResponse("", "validAccessToken", 0, "", 0, "");
 
 		// AuthService 모킹
@@ -53,9 +57,9 @@ public class AuthControllerTest {
 		// API 호출 및 검증
 		mockMvc.perform(post("/api/login-and-redirect")
 				.contentType(MediaType.APPLICATION_JSON)
-				.content("{\"ci\":\"encryptedCi\", \"redirectUrl\":\"http://valid-url.com\"}"))
+				.content(jwtRequest.toString()))
 			.andExpect(status().is3xxRedirection()) // 3xx 리다이렉션 상태 코드 검증
-			.andExpect(MockMvcResultMatchers.redirectedUrl("http://valid-url.com")); // 리다이렉트 URL 검증
+			.andExpect(MockMvcResultMatchers.redirectedUrl("https://www.naver.com/")); // 리다이렉트 URL 검증
 	}
 
 	/**
@@ -65,9 +69,9 @@ public class AuthControllerTest {
 	 */
 	@Test
 	@DisplayName("Authenticate user and return JWT token in cookie")
-	public void testAuthenticateUserWithCookieSuccess() throws Exception {
+	void testAuthenticateUserWithCookieSuccess() throws Exception {
 		// 인증 요청과 응답 설정
-		JwtRequest jwtRequest = new JwtRequest("encryptedCi", "", "http://valid-url.com", "", "");
+		JwtRequest jwtRequest = new JwtRequest("encryptedCi", "", "https://www.naver.com/", "", "");
 		JwtResponse jwtResponse = new JwtResponse("", "validAccessToken", 0, "", 0, "");
 
 		// AuthService 모킹
@@ -90,9 +94,9 @@ public class AuthControllerTest {
 	 */
 	@Test
 	@DisplayName("Authenticate user and return JWT token in header")
-	public void testAuthenticateUserWithHeaderSuccess() throws Exception {
+	void testAuthenticateUserWithHeaderSuccess() throws Exception {
 		// 인증 요청과 응답 설정
-		JwtRequest jwtRequest = new JwtRequest("encryptedCi", "", "http://valid-url.com", "", "");
+		JwtRequest jwtRequest = new JwtRequest("encryptedCi", "", "https://www.naver.com/", "", "");
 		JwtResponse jwtResponse = new JwtResponse("", "validAccessToken", 0, "", 0, "");
 
 		// AuthService 모킹
@@ -114,9 +118,9 @@ public class AuthControllerTest {
 	 */
 	@Test
 	@DisplayName("Authenticate user and return JWT token in body")
-	public void testAuthenticateUserWithBodySuccess() throws Exception {
+	void testAuthenticateUserWithBodySuccess() throws Exception {
 		// 인증 요청과 응답 설정
-		JwtRequest jwtRequest = new JwtRequest("encryptedCi", "", "http://valid-url.com", "", "");
+		JwtRequest jwtRequest = new JwtRequest("encryptedCi", "", "https://www.naver.com/", "", "");
 		JwtResponse jwtResponse = new JwtResponse("", "validAccessToken", 0, "", 0, "");
 
 		// AuthService 모킹
@@ -139,9 +143,9 @@ public class AuthControllerTest {
 	 */
 	@Test
 	@DisplayName("Authenticate user and handle invalid redirect URL")
-	public void testAuthenticateUserAndRedirectInvalidUrl() throws Exception {
+	void testAuthenticateUserAndRedirectInvalidUrl() throws Exception {
 		// 인증 요청과 응답 설정
-		JwtRequest jwtRequest = new JwtRequest("encryptedCi", "", "http://valid-url.com", "", "");
+		JwtRequest jwtRequest = new JwtRequest("encryptedCi", "", "https://www.naver.com/", "", "");
 		JwtResponse jwtResponse = new JwtResponse("", "validAccessToken", 0, "", 0, "");
 
 		// AuthService 모킹
@@ -162,9 +166,9 @@ public class AuthControllerTest {
 	 */
 	@Test
 	@DisplayName("Handle authentication failure")
-	public void testAuthenticateUserFailure() throws Exception {
+	void testAuthenticateUserFailure() throws Exception {
 		// 인증 요청 설정
-		JwtRequest jwtRequest = new JwtRequest("encryptedCi", "", "http://valid-url.com", "", "");
+		JwtRequest jwtRequest = new JwtRequest("encryptedCi", "", "https://www.naver.com/", "", "");
 
 		// AuthService 모킹: 인증 실패 시뮬레이션
 		Mockito.when(authService.authenticateWithTokens(jwtRequest))
