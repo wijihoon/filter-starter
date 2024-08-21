@@ -69,7 +69,8 @@ public class TokenServiceImpl implements TokenService {
 			Date validity = new Date(now.getTime() + jwtTokenProperties.getValidity());
 
 			String accessToken = Jwts.builder()
-				.setClaims(new ObjectMapper().convertValue(jwtResponse, new TypeReference<Map<String, Object>>() {})) // 클레임 설정
+				.setClaims(new ObjectMapper().convertValue(jwtResponse, new TypeReference<Map<String, Object>>() {
+				})) // 클레임 설정
 				.setIssuedAt(now) // 발행일 설정
 				.setExpiration(validity) // 만료일 설정
 				.signWith(SignatureAlgorithm.HS256, secretKey) // 서명 설정 (HS256 알고리즘 사용)

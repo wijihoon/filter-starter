@@ -1,11 +1,13 @@
 package com.shinhancard.toss.facade;
 
+import org.springframework.stereotype.Component;
+
 import com.shinhancard.toss.exception.AuthenticationException;
 import com.shinhancard.toss.io.TokenResponse;
 import com.shinhancard.toss.service.AuthService;
 import com.shinhancard.toss.service.TokenService;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
 /**
  * 인증 및 JWT 토큰 생성을 위한 Facade 클래스입니다.

@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.shinhancard.toss.exception.AuthenticationException;
 import com.shinhancard.toss.facade.OAuthFacade;
+import com.shinhancard.toss.io.ResponseVo;
 import com.shinhancard.toss.io.TokenRequest;
 import com.shinhancard.toss.io.TokenResponse;
-import com.shinhancard.toss.io.ResponseVo;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

@@ -35,8 +35,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class LoggingFilter extends OncePerRequestFilter {
 
-	private static final String CONTEXT_HTTP_REQUEST = "HTTP Request";
-	private static final String CONTEXT_HTTP_RESPONSE = "HTTP Response";
+	private static final String CONTEXT_HTTP_REQUEST = "REQUEST";
+	private static final String CONTEXT_HTTP_RESPONSE = "RESPONSE";
 
 	private final LoggingProperties loggingProperties; // 설정 프로퍼티 주입
 	private final LogService logService; // 로그 전송 서비스
