@@ -3,12 +3,6 @@ spring:
     activate:
       on-profile: "dev"
 
-redis:
-  host: dev-redis-server # 개발 환경 Redis 서버의 호스트명을 설정합니다.
-  port: 6379 # 개발 환경 Redis 서버의 포트 번호를 설정합니다.
-  password: your_dev_redis_password # 개발 환경 Redis 서버의 비밀번호를 설정합니다.
-  timeout: 2000 # Redis 커넥션 타임아웃을 2000 밀리초로 설정합니다.
-
 jwt:
   secret: 4df1a335aa6d141b2b7c026ae402ade5da0cce2f381d684f191a4c8ee0a45f9f6f586d0d1029c15314428928e803e5a0a06bf471e6cfd892be0fd3e280b5e2ac # 개발 환경에서 사용할 JWT 비밀 키를 설정합니다.
   validity: 3600000 # JWT의 유효 기간을 1시간(3600000 밀리초)으로 설정합니다.
@@ -60,6 +54,3 @@ logging:
     truncate: true # 응답 본문 자르기 활성화 여부
   body:
     maxSize: 10000 # 본문 자를 때 최대 크기 (바이트 단위)
-
-
-

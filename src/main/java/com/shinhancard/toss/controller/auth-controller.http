@@ -3,30 +3,48 @@ POST http://localhost:8080/api/login-and-redirect
 Content-Type: application/json
 
 {
-  "encryptedCi": "your-encrypted-ci",
-  "redirectUrl": "http://example.com/success"
+  "grantType": "authorization_code",
+  "clientId": "my-client-id",
+  "redirectUrl": "http://example.com",
+  "code": "auth-code",
+  "clientSecret": "optional-secret"
 }
+
 
 ### Login with Cookie
 POST http://localhost:8080/api/login-with-cookie
 Content-Type: application/json
 
 {
-  "encryptedCi": "your-encrypted-ci"
+  "grantType": "authorization_code",
+  "clientId": "my-client-id",
+  "redirectUrl": "http://example.com",
+  "code": "auth-code",
+  "clientSecret": "optional-secret"
 }
+
 
 ### Login with Header
 POST http://localhost:8080/api/login-with-header
 Content-Type: application/json
 
 {
-  "encryptedCi": "your-encrypted-ci"
+  "grantType": "authorization_code",
+  "clientId": "my-client-id",
+  "redirectUrl": "http://example.com",
+  "code": "auth-code",
+  "clientSecret": "optional-secret"
 }
+
 
 ### Login with Body
 POST http://localhost:8080/api/login-with-body
 Content-Type: application/json
 
 {
-  "encryptedCi": "your-encrypted-ci"
+  "grantType": "authorization_code",
+  "clientId": "my-client-id",
+  "redirectUrl": "http://example.com",
+  "code": "auth-code",
+  "clientSecret": "optional-secret"
 }

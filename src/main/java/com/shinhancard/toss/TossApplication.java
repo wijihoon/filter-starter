@@ -2,6 +2,7 @@ package com.shinhancard.toss;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 
 /**
  * Toss 애플리케이션의 진입점을 정의하는 클래스입니다.
@@ -24,6 +25,13 @@ public class TossApplication {
 	public static void main(String[] args) {
 		// SpringApplication.run을 호출하여 TossApplication 클래스를 실행합니다.
 		// 이 메서드는 Spring Boot 애플리케이션을 초기화하고 실행합니다.
-		SpringApplication.run(TossApplication.class, args);
+		// SpringApplication.run(TossApplication.class, args);
+		ApplicationContext context = SpringApplication.run(TossApplication.class, args);
+
+		// 빈 목록 출력
+		String[] beanNames = context.getBeanDefinitionNames();
+		for (String beanName : beanNames) {
+			System.out.println(beanName);
+		}
 	}
 }

@@ -3,12 +3,6 @@ spring:
     activate:
       on-profile: "local"
 
-redis:
-  host: localhost
-  port: 6379
-  password: your_local_redis_password
-  timeout: 2000
-
 jwt:
   secret: cffb6073014440864761f4a8a55e7d2d730033ccbc7b426039175d28ecdc81c1fc2546a76f47600ad610660f4b4d211f2dbfa875a3f2633cddfc7222f936e060
   validity: 3600000
@@ -19,12 +13,15 @@ cors:
   allowedOrigins:
     - "https://alloweddomain.com"
     - "https://anotheralloweddomain.com"
+    - "http://localhost:48080"
   allowed-methods:
     - "GET"
-    - "POST"
   allowed-headers:
     - "Authorization"
     - "Content-Type"
+    #PostMan
+    - "Cache-Control"
+    - "Postman-Token"
   allow-credentials: true
 
 kafka:
@@ -38,7 +35,7 @@ kafka:
 
 logging:
   level:
-    root: INFO # 기본 로그 레벨을 INFO로 설정합니다.
+    root: DEBUG # 기본 로그 레벨을 INFO로 설정합니다.
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} %file:%line - %msg%n%ex{full}"
   file:
@@ -51,3 +48,21 @@ logging:
     truncate: true # 응답 본문 자르기 활성화 여부
   body:
     maxSize: 10000 # 본문 자를 때 최대 크기 (바이트 단위)
+
+openapi:
+  title: "Private Label Credit Card API" # OpenAPI 문서의 제목
+  version: "1.0.0" # OpenAPI 문서의 버전
+  description: "This is a default description for the API." # OpenAPI 문서의 설명
+  contact:
+    name: "Default Contact Name" # 연락처 이름
+    url: "http://default-contact-url.com" # 연락처 URL
+    email: "contact@example.com" # 연락처 이메일 주소
+  servers:
+    - url: "http://default-server-url.com" # 서버 URL
+      description: "Default server description" # 서버 설명
+    - url: "http://another-server-url.com" # 추가 서버 URL
+      description: "Another server description" # 추가 서버 설명
+
+debug: true
+server:
+  port: 48080

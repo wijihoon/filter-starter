@@ -23,13 +23,13 @@ java {
 val versions = mapOf(
         "logback" to "1.4.12", // Logback 버전
         "slf4j" to "2.0.7", // SLF4J 버전
-        "jjwt" to "0.12.6", // JWT 버전
-        "swagger" to "1.8.0", // Swagger 버전
+        "jjwt" to "0.9.1", // JWT 버전
+        "springdoc" to "2.3.0", // Springdoc OpenAPI 버전
         "junit" to "5.10.0", // JUnit 버전
         "mockito" to "5.12.0", // Mockito 버전
         "assertj" to "3.26.0", // AssertJ 버전
         "commons-pool" to "2.12.0", // Commons Pool 버전
-        "lettuce-core" to "6.3.2.RELEASE" // Lettuce Core 버전
+        "lettuce-core" to "6.3.2" // Lettuce Core 버전
 )
 
 // 프로젝트 메타데이터 설정
@@ -72,9 +72,11 @@ dependencies {
     implementation("org.springframework.kafka:spring-kafka") // Kafka 스타터
 
     // JWT 관련 라이브러리
-    implementation("io.jsonwebtoken:jjwt-api:${versions["jjwt"]}") // JJWT API
-    implementation("io.jsonwebtoken:jjwt-impl:${versions["jjwt"]}") // JJWT 구현
-    implementation("io.jsonwebtoken:jjwt-jackson:${versions["jjwt"]}") // JJWT Jackson
+    implementation("io.jsonwebtoken:jjwt:${versions["jjwt"]}") // JJWT
+    // JAXB API
+    implementation("javax.xml.bind:jaxb-api:2.3.1")
+    // JAXB Runtime
+    implementation("org.glassfish.jaxb:jaxb-runtime:2.3.1")
 
     // 로깅 관련 라이브러리
     implementation("ch.qos.logback:logback-classic:${versions["logback"]}") // Logback Classic
@@ -86,8 +88,8 @@ dependencies {
     testCompileOnly("org.projectlombok:lombok") // Lombok for Test
     testAnnotationProcessor("org.projectlombok:lombok") // Lombok Annotation Processor for Test
 
-    // Swagger 관련 라이브러리
-    implementation("org.springdoc:springdoc-openapi-ui:${versions["swagger"]}") // Springdoc OpenAPI UI
+    // Springdoc OpenAPI 관련 라이브러리
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${versions["springdoc"]}") // Springdoc OpenAPI Starter Web MVC UI
 
     implementation("org.apache.commons:commons-pool2:${versions["commons-pool"]}") // Commons Pool2
 

@@ -3,12 +3,6 @@ spring:
     activate:
       on-profile: "prod"
 
-redis:
-  host: prod-redis-server # 프로덕션 환경 Redis 서버의 호스트명을 설정합니다.
-  port: 6379 # 프로덕션 환경 Redis 서버의 포트 번호를 설정합니다.
-  password: your_prod_redis_password # 프로덕션 환경 Redis 서버의 비밀번호를 설정합니다.
-  timeout: 2000 # Redis 커넥션 타임아웃을 2000 밀리초로 설정합니다.
-
 jwt:
   secret: f517c36a2559c7bb177ae4051239851af8caeb0efc969391810b862eca515750790163c61879b4ce909a78379d903f57a6f9ab4194f2465d705f025a5ea35cf6 # 프로덕션 환경에서 사용할 JWT 비밀 키를 설정합니다.
   validity: 3600000 # JWT의 유효 기간을 1시간(3600000 밀리초)으로 설정합니다.

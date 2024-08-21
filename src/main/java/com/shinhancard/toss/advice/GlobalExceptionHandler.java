@@ -10,9 +10,6 @@ import com.shinhancard.toss.exception.InvalidRedirectUrlException;
 import com.shinhancard.toss.exception.InvalidTokenException;
 import com.shinhancard.toss.exception.JwtTokenException;
 import com.shinhancard.toss.exception.KafkaException;
-import com.shinhancard.toss.exception.RedisConnectionException;
-import com.shinhancard.toss.exception.RedisDataNotFoundException;
-import com.shinhancard.toss.exception.RedisOperationException;
 import com.shinhancard.toss.exception.TokenCreationException;
 import com.shinhancard.toss.exception.TokenExpiredException;
 import com.shinhancard.toss.exception.TokenRefreshException;
@@ -112,57 +109,6 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<ResponseVo<Object>> handleKafkaException(KafkaException e) {
 		// KafkaException 발생 시 로그 기록
 		log.error("KafkaException 발생: 코드={}, 메시지={}", e.getErrorCode(), e.getErrorMessage(), e);
-		// 에러 응답 반환
-		return buildErrorResponse(e.getErrorMessage(), e.getHttpStatus());
-	}
-
-	/**
-	 * RedisConnectionException 발생 시 호출되는 메소드입니다.
-	 * <p>
-	 * Redis 연결 관련 에러를 처리합니다.
-	 * </p>
-	 *
-	 * @param e 발생한 RedisConnectionException 예외 객체
-	 * @return 에러 응답을 담은 ResponseEntity 객체
-	 */
-	@ExceptionHandler(RedisConnectionException.class)
-	public ResponseEntity<ResponseVo<Object>> handleRedisConnectionException(RedisConnectionException e) {
-		// RedisConnectionException 발생 시 로그 기록
-		log.error("RedisConnectionException 발생: 메시지={}", e.getMessage(), e);
-		// 에러 응답 반환
-		return buildErrorResponse(e.getErrorMessage(), e.getHttpStatus());
-	}
-
-	/**
-	 * RedisDataNotFoundException 발생 시 호출되는 메소드입니다.
-	 * <p>
-	 * Redis에서 데이터를 찾을 수 없을 때의 에러를 처리합니다.
-	 * </p>
-	 *
-	 * @param e 발생한 RedisDataNotFoundException 예외 객체
-	 * @return 에러 응답을 담은 ResponseEntity 객체
-	 */
-	@ExceptionHandler(RedisDataNotFoundException.class)
-	public ResponseEntity<ResponseVo<Object>> handleRedisDataNotFoundException(RedisDataNotFoundException e) {
-		// RedisDataNotFoundException 발생 시 로그 기록
-		log.error("RedisDataNotFoundException 발생: 메시지={}", e.getMessage(), e);
-		// 에러 응답 반환
-		return buildErrorResponse(e.getErrorMessage(), e.getHttpStatus());
-	}
-
-	/**
-	 * RedisOperationException 발생 시 호출되는 메소드입니다.
-	 * <p>
-	 * Redis 연산 관련 에러를 처리합니다.
-	 * </p>
-	 *
-	 * @param e 발생한 RedisOperationException 예외 객체
-	 * @return 에러 응답을 담은 ResponseEntity 객체
-	 */
-	@ExceptionHandler(RedisOperationException.class)
-	public ResponseEntity<ResponseVo<Object>> handleRedisOperationException(RedisOperationException e) {
-		// RedisOperationException 발생 시 로그 기록
-		log.error("RedisOperationException 발생: 메시지={}", e.getMessage(), e);
 		// 에러 응답 반환
 		return buildErrorResponse(e.getErrorMessage(), e.getHttpStatus());
 	}

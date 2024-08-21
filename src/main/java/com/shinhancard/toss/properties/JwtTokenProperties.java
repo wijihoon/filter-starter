@@ -38,7 +38,7 @@ public class JwtTokenProperties {
 	 * </p>
 	 */
 	@Positive(message = "Validity must be greater than 0") // 유효 기간이 0보다 커야 합니다.
-	private long validity = 3600000L; // 기본값은 1시간 (3600000ms)
+	private int validity = 3600000; // 기본값은 1시간 (3600000ms)
 
 	/**
 	 * JWT 리프레시 토큰 유효 기간 (밀리초 단위).
@@ -47,7 +47,7 @@ public class JwtTokenProperties {
 	 * </p>
 	 */
 	@Positive(message = "Refresh validity must be greater than 0") // 유효 기간이 0보다 커야 합니다.
-	private long refreshValidity = 86400000L; // 기본값은 24시간 (86400000ms)
+	private int refreshValidity = 86400000; // 기본값은 24시간 (86400000ms)
 
 	/**
 	 * 설정된 값들이 유효한지 검증합니다.
