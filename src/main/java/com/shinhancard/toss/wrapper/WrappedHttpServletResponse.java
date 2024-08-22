@@ -1,7 +1,7 @@
 package com.shinhancard.toss.wrapper;
 
 import java.io.ByteArrayOutputStream;
-import java.io.PrintWriter;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 import jakarta.servlet.ServletOutputStream;
@@ -14,7 +14,6 @@ import jakarta.servlet.http.HttpServletResponseWrapper;
 public class WrappedHttpServletResponse extends HttpServletResponseWrapper {
 	private final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 	private final CachedServletOutputStream outputStream = new CachedServletOutputStream(buffer);
-	private final PrintWriter writer = new PrintWriter(outputStream, true, StandardCharsets.UTF_8);
 
 	public WrappedHttpServletResponse(HttpServletResponse response) {
 		super(response);
@@ -26,8 +25,25 @@ public class WrappedHttpServletResponse extends HttpServletResponseWrapper {
 	}
 
 	@Override
-	public PrintWriter getWriter() {
-		return this.writer;
+	public void flushBuffer() throws IOException {
+		// 버퍼의 내용을 클라이언트로 전송
+		byte[] content = buffer.toByteArray();
+		HttpServletResponse originalResponse = (HttpServletResponse)getResponse();
+
+		originalResponse.getOutputStream().write(content);
+		originalResponse.getOutputStream().flush();
+	}
+
+	@Override
+	public void reset() {
+		super.reset();
+		buffer.reset();
+	}
+
+	@Override
+	public void resetBuffer() {
+		super.resetBuffer();
+		buffer.reset();
 	}
 
 	public String getBody() {

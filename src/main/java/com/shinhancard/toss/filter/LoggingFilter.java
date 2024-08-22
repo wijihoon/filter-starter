@@ -1,11 +1,10 @@
 package com.shinhancard.toss.filter;
 
 import java.io.IOException;
-import java.util.Enumeration;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
@@ -35,18 +34,15 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class LoggingFilter extends OncePerRequestFilter {
 
+	// MDC 컨텍스트 구분자 (요청, 응답)
 	private static final String CONTEXT_HTTP_REQUEST = "REQUEST";
 	private static final String CONTEXT_HTTP_RESPONSE = "RESPONSE";
-
-	private final LoggingProperties loggingProperties; // 설정 프로퍼티 주입
+	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper(); // JSON 변환기, 싱글턴으로 재사용
+	private final LoggingProperties loggingProperties; // 로그 설정 프로퍼티
 	private final LogService logService; // 로그 전송 서비스
-	private final ObjectMapper objectMapper = new ObjectMapper(); // JSON 변환기
 
 	/**
 	 * 요청 및 응답을 필터링하고 로그를 기록합니다.
-	 * <p>
-	 * 요청 및 응답을 래핑하여 본문을 읽고 로그를 기록하며, 필터 체인을 계속합니다.
-	 * </p>
 	 *
 	 * @param request     필터 체인에 전달된 {@link HttpServletRequest}
 	 * @param response    필터 체인에 전달된 {@link HttpServletResponse}
@@ -62,11 +58,16 @@ public class LoggingFilter extends OncePerRequestFilter {
 		WrappedHttpServletResponse wrappedResponse = new WrappedHttpServletResponse(response);
 
 		try {
-			logRequest(wrappedRequest); // 요청 로그 기록
-			filterChain.doFilter(wrappedRequest, wrappedResponse); // 필터 체인 계속
-			logResponse(wrappedResponse); // 응답 로그 기록
+			// 요청 로그 기록
+			logRequest(wrappedRequest);
+			// 필터 체인 계속
+			filterChain.doFilter(wrappedRequest, wrappedResponse);
+			// 응답 로그 기록
+			wrappedResponse.flushBuffer(); // 응답 본문을 기록하기 위해 flushBuffer 호출
+			logResponse(wrappedResponse);
 		} catch (Exception e) {
-			log.error("Error occurred during request processing", e); // 예외 로그 기록
+			// 예외 발생 시 로그 기록
+			log.error("요청 처리 중 오류 발생", e);
 			throw e; // 예외를 다시 던져서 처리하도록 함
 		} finally {
 			MDC.clear(); // 메모리 누수 방지를 위해 MDC 초기화
@@ -79,12 +80,14 @@ public class LoggingFilter extends OncePerRequestFilter {
 	 * @param request HTTP 요청을 래핑한 {@link WrappedHttpServletRequest} 객체
 	 * @throws IOException 요청 본문을 읽을 때 발생할 수 있는 예외
 	 */
-	void logRequest(WrappedHttpServletRequest request) throws IOException {
-		MDC.put("context", CONTEXT_HTTP_REQUEST); // MDC에 컨텍스트 설정
-
-		Map<String, Object> logData = buildRequestLogData(request); // 요청 로그 데이터 생성
-
-		sendLog(logData); // 로그 전송
+	private void logRequest(WrappedHttpServletRequest request) {
+		try {
+			MDC.put("context", CONTEXT_HTTP_REQUEST);
+			Map<String, Object> logData = buildRequestLogData(request);
+			sendLog(logData);
+		} catch (Exception e) {
+			log.error("요청 데이터 로그 기록 실패", e);
+		}
 	}
 
 	/**
@@ -93,12 +96,14 @@ public class LoggingFilter extends OncePerRequestFilter {
 	 * @param response HTTP 응답을 래핑한 {@link WrappedHttpServletResponse} 객체
 	 * @throws IOException 응답 본문을 읽을 때 발생할 수 있는 예외
 	 */
-	void logResponse(WrappedHttpServletResponse response) throws IOException {
-		MDC.put("context", CONTEXT_HTTP_RESPONSE); // MDC에 컨텍스트 설정
-
-		Map<String, Object> logData = buildResponseLogData(response); // 응답 로그 데이터 생성
-
-		sendLog(logData); // 로그 전송
+	private void logResponse(WrappedHttpServletResponse response) {
+		try {
+			MDC.put("context", CONTEXT_HTTP_RESPONSE);
+			Map<String, Object> logData = buildResponseLogData(response);
+			sendLog(logData);
+		} catch (Exception e) {
+			log.error("응답 데이터 로그 기록 실패", e);
+		}
 	}
 
 	/**
@@ -115,8 +120,9 @@ public class LoggingFilter extends OncePerRequestFilter {
 		logData.put("remoteAddress", request.getRemoteAddr()); // 원격 주소
 		logData.put("headers", getHeadersMap(request)); // 헤더 정보
 
+		// 본문 로그가 너무 길 경우 잘라서 기록
 		if (loggingProperties.getRequestBody().isTruncate()) {
-			logData.put("body", truncateBody(request.getBody())); // 본문 자르기
+			logData.put("body", truncateBody(request.getBody()));
 		}
 
 		return logData;
@@ -131,10 +137,11 @@ public class LoggingFilter extends OncePerRequestFilter {
 	private Map<String, Object> buildResponseLogData(WrappedHttpServletResponse response) {
 		Map<String, Object> logData = new HashMap<>();
 		logData.put("status", response.getStatus()); // 응답 상태 코드
-		logData.put("headers", getHeadersMap((HttpServletRequest)response)); // 헤더 정보
+		logData.put("headers", getHeadersMap(response)); // 헤더 정보
 
+		// 본문 로그가 너무 길 경우 잘라서 기록
 		if (loggingProperties.getResponseBody().isTruncate()) {
-			logData.put("body", truncateBody(response.getBody())); // 본문 자르기
+			logData.put("body", truncateBody(response.getBody()));
 		}
 
 		return logData;
@@ -147,9 +154,9 @@ public class LoggingFilter extends OncePerRequestFilter {
 	 * @throws IOException JSON 변환 중 발생할 수 있는 예외
 	 */
 	private void sendLog(Map<String, Object> logData) throws IOException {
-		String logJson = objectMapper.writeValueAsString(logData); // 로그 데이터 JSON 변환
-		logService.sendLog(logJson); // 로그 전송
-		log.debug(logJson); // 디버깅을 위해 로그를 콘솔에도 출력
+		String logJson = OBJECT_MAPPER.writeValueAsString(logData);
+		logService.sendLog(logJson);
+		log.debug(logJson);
 	}
 
 	/**
@@ -158,15 +165,23 @@ public class LoggingFilter extends OncePerRequestFilter {
 	 * @param requestOrResponse {@link HttpServletRequest} 또는 {@link HttpServletResponse}
 	 * @return 헤더 정보를 담은 맵
 	 */
-	private Map<String, String> getHeadersMap(HttpServletRequest requestOrResponse) {
-		Map<String, String> headers = new HashMap<>();
-		Enumeration<String> headerNames = requestOrResponse.getHeaderNames(); // 헤더 이름 열거형
-		// Enumeration을 Stream으로 변환하여 처리
-		Stream.of(headerNames).flatMap(headerName -> {
-			String headerValue = requestOrResponse.getHeader(String.valueOf(headerName));
-			return Stream.of(Map.entry(headerName, headerValue));
-		}).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)); // 헤더를 맵으로 변환
-		return headers;
+	private Map<String, String> getHeadersMap(Object requestOrResponse) {
+		if (requestOrResponse instanceof WrappedHttpServletRequest wrappedRequest) {
+			return Collections.list(wrappedRequest.getHeaderNames()).stream()
+				.collect(Collectors.toMap(
+					headerName -> headerName,
+					wrappedRequest::getHeader,
+					(existing, replacement) -> existing + ", " + replacement // 중복된 값을 쉼표로 구분하여 병합
+				));
+		} else if (requestOrResponse instanceof WrappedHttpServletResponse wrappedResponse) {
+			return wrappedResponse.getHeaderNames().stream()
+				.collect(Collectors.toMap(
+					headerName -> headerName,
+					wrappedResponse::getHeader,
+					(existing, replacement) -> existing + ", " + replacement // 중복된 값을 쉼표로 구분하여 병합
+				));
+		}
+		return new HashMap<>();
 	}
 
 	/**
@@ -175,11 +190,14 @@ public class LoggingFilter extends OncePerRequestFilter {
 	 * @param body 요청 또는 응답 본문
 	 * @return 잘린 본문 문자열
 	 */
-	String truncateBody(String body) {
-		int maxSize = loggingProperties.getBody().getMaxSize(); // 최대 크기
-		if (body.length() > maxSize) {
-			return body.substring(0, maxSize) + "... [TRUNCATED]"; // 본문 자르기
+	private String truncateBody(String body) {
+		if (body == null) {
+			return "[No Content]";
 		}
-		return body; // 본문이 최대 크기 이내일 경우 원본 반환
+		int maxSize = loggingProperties.getBody().getMaxSize();
+		if (body.length() > maxSize) {
+			return body.substring(0, maxSize) + "... [TRUNCATED]";
+		}
+		return body;
 	}
 }

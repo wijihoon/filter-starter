@@ -21,15 +21,15 @@ import lombok.Setter;
 @Setter // Lombok의 @Setter 어노테이션을 사용하여 모든 필드의 setter 메서드를 자동으로 생성합니다.
 @ConfigurationProperties(prefix = "jwt") // application.yml의 jwt 접두사에 매핑되는 설정을 읽어옵니다.
 @Validated // 유효성 검사를 활성화합니다.
-public class JwtTokenProperties {
+public class TokenProperties {
 
 	/**
 	 * JWT 비밀 키.
 	 * <p>
-	 * 기본값은 "defaultSecretKey"입니다.
+	 * 기본값은 "cffb6073014440864761f4a8a55e7d2d730033ccbc7b426039175d28ecdc81c1fc2546a76f47600ad610660f4b4d211f2dbfa875a3f2633cddfc7222f936e060"입니다.
 	 * </p>
 	 */
-	private String secret = "defaultSecretKey"; // 기본값 설정
+	private String secret = "cffb6073014440864761f4a8a55e7d2d730033ccbc7b426039175d28ecdc81c1fc2546a76f47600ad610660f4b4d211f2dbfa875a3f2633cddfc7222f936e060"; // 기본값 설정
 
 	/**
 	 * JWT 토큰 유효 기간 (밀리초 단위).

@@ -2,7 +2,6 @@ package com.shinhancard.toss.config;
 
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,6 +11,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.servers.Server;
+import lombok.RequiredArgsConstructor;
 
 /**
  * OpenAPI 설정을 위한 구성 클래스입니다.
@@ -20,23 +20,10 @@ import io.swagger.v3.oas.models.servers.Server;
  * </p>
  */
 @Configuration // Spring의 설정 클래스를 나타냅니다.
+@RequiredArgsConstructor
 public class OpenAPIConfig {
 
 	private final OpenAPIProperties openAPIProperties;
-
-	/**
-	 * 생성자 주입을 통해 OpenAPIProperties를 주입받습니다.
-	 * <p>
-	 * 생성자 주입을 통해 의존성 주입을 받으며, 필드가 final로 선언되어
-	 * 불변성을 보장합니다.
-	 * </p>
-	 *
-	 * @param openAPIProperties OpenAPI 설정을 포함한 프로퍼티 객체
-	 */
-	@Autowired
-	public OpenAPIConfig(OpenAPIProperties openAPIProperties) {
-		this.openAPIProperties = openAPIProperties;
-	}
 
 	/**
 	 * OpenAPI 인스턴스를 생성하고, 설정값을 기반으로 구성합니다.

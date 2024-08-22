@@ -33,6 +33,11 @@ public class KafkaProperties {
 	 */
 	private Producer producer = new Producer();
 
+	/**
+	 * Kafka 기능의 활성화 여부를 설정합니다.
+	 */
+	private boolean enabled = false; // 기본값은 false로 설정
+
 	@PostConstruct
 	private void validateProperties() {
 		if (bootstrapServers == null || bootstrapServers.isEmpty()) {

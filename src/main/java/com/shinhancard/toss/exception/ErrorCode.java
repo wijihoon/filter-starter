@@ -350,7 +350,18 @@ public enum ErrorCode {
 	JWT_TOKEN_INVALID("1007", "JWT token is invalid", HttpStatus.UNAUTHORIZED),
 	KAFKA_SEND_FAILED("KAFKA_SEND_FAILED", "Failed to send log message to Kafka.", HttpStatus.INTERNAL_SERVER_ERROR),
 	JWT_TOKEN_EXPIRED("1002", "JWT Token has expired", HttpStatus.UNAUTHORIZED),
-	JWT_TOKEN_MALFORMED("1003", "Malformed JWT Token", HttpStatus.BAD_REQUEST);
+	JWT_TOKEN_MALFORMED("1003", "Malformed JWT Token", HttpStatus.BAD_REQUEST),
+	CORS_ORIGIN_POLICY_VIOLATION("", "CORS origin policy violation", HttpStatus.FORBIDDEN),
+	CORS_METHOD_POLICY_VIOLATION("", "CORS method policy violation", HttpStatus.FORBIDDEN),
+	CORS_HEADERS_POLICY_VIOLATION("", "CORS headers policy violation", HttpStatus.FORBIDDEN),
+
+	// XSS 공격 관련 에러 코드
+	XSS_DETECTED("", "XSS attack detected", HttpStatus.FORBIDDEN),
+	XSS_IN_PARAMETER("", "XSS attack detected in parameter", HttpStatus.FORBIDDEN),
+	XSS_IN_COOKIE("", "XSS attack detected in cookie", HttpStatus.FORBIDDEN),
+	XSS_IN_BODY("", "XSS attack detected in body", HttpStatus.FORBIDDEN),
+
+	CSRF_TOKEN_INVALID("", "CSRF Token Invalid", HttpStatus.FORBIDDEN);
 
 	private final String code; // 에러 코드
 	private final String message; // 에러 메시지

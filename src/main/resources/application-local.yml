@@ -9,22 +9,27 @@ jwt:
   refresh:
     validity: 2592000000
 
-cors:
-  allowedOrigins:
-    - "https://alloweddomain.com"
-    - "https://anotheralloweddomain.com"
-    - "http://localhost:48080"
-  allowed-methods:
-    - "GET"
-  allowed-headers:
-    - "Authorization"
-    - "Content-Type"
-    #PostMan
-    - "Cache-Control"
-    - "Postman-Token"
-  allow-credentials: true
+#cors:
+#  allowed-origins:
+#    - "https://alloweddomain.com"
+#    - "https://anotheralloweddomain.com"
+#    - "http://localhost:48080"
+#    - "https://toss.im/"
+#  allowed-methods:
+#    - "GET"
+#    - "POST"
+#  allowed-headers:
+#    - "Authorization"
+#    - "Content-Type"
+#    - "X-Requested-With"
+#    - "Accept"
+#    #PostMan
+#    - "Cache-Control"
+#    - "Postman-Token"
+#  allow-credentials: false
 
 kafka:
+  enabled: false
   bootstrapServers: localhost:9092  # 수정된 키 이름
   producer:
     keySerializer: org.apache.kafka.common.serialization.StringSerializer
@@ -62,6 +67,33 @@ openapi:
       description: "Default server description" # 서버 설명
     - url: "http://another-server-url.com" # 추가 서버 URL
       description: "Another server description" # 추가 서버 설명
+
+xss:
+  enable: true
+  patterns:
+    - "<script.*?>.*?</script>" # <script> 태그
+    - "<.*?javascript:.*?>" # javascript 프로토콜
+    - "<.*?vbscript:.*?>" # vbscript 프로토콜
+    - "<.*?data:.*?>" # data URIs
+    - "<.*?expression\\(.*?>" # expressions
+    - "<.*?onload\\s*=.*?>" # onload 이벤트 핸들러
+    - "<.*?onclick\\s*=.*?>" # onclick 이벤트 핸들러
+    - "<.*?onerror\\s*=.*?>" # onerror 이벤트 핸들러
+    - "<.*?onmouseover\\s*=.*?>" # onmouseover 이벤트 핸들러
+    - "<.*?onfocus\\s*=.*?>" # onfocus 이벤트 핸들러
+    - "<.*?onchange\\s*=.*?>" # onchange 이벤트 핸들러
+    - "<.*?oninput\\s*=.*?>" # oninput 이벤트 핸들러
+    - "<.*?onabort\\s*=.*?>" # onabort 이벤트 핸들러
+    - "<.*?onbeforeunload\\s*=.*?>" # onbeforeunload 이벤트 핸들러
+    - "<.*?src\\s*=.*?>" # src 속성
+    - "<.*?href\\s*=.*?>" # href 속성
+    - "<.*?background\\s*=.*?>" # background 속성
+    - "<iframe.*?>.*?</iframe>" # iframe 태그
+    - "<object.*?>.*?</object>" # object 태그
+    - "<embed.*?>" # embed 태그
+    - "<form.*?>" # form 태그
+    - "<style.*?>" # style 태그
+    - "<.*?data-.*?>" # data 속성
 
 debug: true
 server:

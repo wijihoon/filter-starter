@@ -3,7 +3,6 @@ package com.shinhancard.toss.config;
 import java.util.Map;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
@@ -12,6 +11,8 @@ import org.springframework.kafka.core.ProducerFactory;
 
 import com.shinhancard.toss.properties.KafkaProperties;
 
+import lombok.RequiredArgsConstructor;
+
 /**
  * Kafka 프로듀서 설정을 위한 클래스입니다.
  * <p>
@@ -19,13 +20,9 @@ import com.shinhancard.toss.properties.KafkaProperties;
  * </p>
  */
 @Configuration
-@EnableConfigurationProperties(KafkaProperties.class)
+@RequiredArgsConstructor
 public class KafkaConfig {
 	private final KafkaProperties kafkaProperties;
-
-	public KafkaConfig(KafkaProperties kafkaProperties) {
-		this.kafkaProperties = kafkaProperties;
-	}
 
 	/**
 	 * Kafka 프로듀서 팩토리를 생성합니다.

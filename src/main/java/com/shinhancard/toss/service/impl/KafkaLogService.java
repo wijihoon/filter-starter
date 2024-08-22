@@ -9,6 +9,7 @@ import com.shinhancard.toss.properties.KafkaProperties;
 import com.shinhancard.toss.service.LogService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Kafka를 사용하여 로그를 전송하는 서비스 구현체입니다.
@@ -16,6 +17,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class KafkaLogService implements LogService {
 
 	private final KafkaTemplate<String, String> kafkaTemplate; // Kafka 템플릿 주입
@@ -29,6 +31,13 @@ public class KafkaLogService implements LogService {
 	 */
 	@Override
 	public void sendLog(String logJson) {
+
+		if (!kafkaProperties.isEnabled()) {
+			// Kafka가 비활성화된 경우 로깅 처리
+			log.info("Kafka logging is disabled. Log data: {}", logJson);
+			return; // 로그 전송을 하지 않음
+		}
+
 		try {
 			// Kafka 프로퍼티에서 로그 전송용 토픽 이름 가져오기
 			String topic = kafkaProperties.getProducer().getTopic().getLog();
@@ -36,6 +45,7 @@ public class KafkaLogService implements LogService {
 			kafkaTemplate.send(topic, logJson).get();
 		} catch (Exception e) {
 			// 로그 전송 중 문제가 발생하면 KafkaException 예외를 던짐
+			log.error("Failed to send log data to Kafka", e);
 			throw new KafkaException(ErrorCode.KAFKA_SEND_FAILED);
 		}
 	}

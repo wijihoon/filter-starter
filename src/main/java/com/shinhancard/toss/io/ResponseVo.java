@@ -2,6 +2,9 @@ package com.shinhancard.toss.io;
 
 import org.springframework.http.HttpStatus;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * 응답 데이터를 표현하는 불변 객체입니다.
  *
@@ -13,6 +16,8 @@ public record ResponseVo<T>(
 	T data, // 응답 데이터
 	HttpStatus status // HTTP 상태 코드
 ) {
+	private static final ObjectMapper objectMapper = new ObjectMapper();
+
 	/**
 	 * 성공 응답을 생성합니다.
 	 * <p>
@@ -57,5 +62,19 @@ public record ResponseVo<T>(
 	 */
 	public static <T> ResponseVo<T> successWithHeader(T data) {
 		return new ResponseVo<>(true, "Success", data, HttpStatus.OK);
+	}
+
+	/**
+	 * JSON 형식의 문자열을 반환합니다.
+	 *
+	 * @return JSON 형식의 문자열
+	 */
+	@Override
+	public String toString() {
+		try {
+			return objectMapper.writeValueAsString(this);
+		} catch (JsonProcessingException e) {
+			throw new RuntimeException("Failed to convert ResponseVo to JSON string", e);
+		}
 	}
 }

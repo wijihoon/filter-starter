@@ -1,6 +1,7 @@
 package com.shinhancard.toss.wrapper;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.WriteListener;
@@ -32,11 +33,15 @@ public class CachedServletOutputStream extends ServletOutputStream {
 	@Override
 	public void setWriteListener(WriteListener listener) {
 		// 비동기 처리가 필요 없는 경우 빈 구현
-		// 이 메서드는 비동기 I/O 처리를 위한 메서드입니다.
 	}
 
 	@Override
-	public void write(int b) {
+	public void write(int b) throws IOException {
 		buffer.write(b); // 버퍼에 바이트를 기록
+	}
+
+	@Override
+	public void write(byte[] b, int off, int len) throws IOException {
+		buffer.write(b, off, len); // 바이트 배열의 일부를 버퍼에 기록
 	}
 }

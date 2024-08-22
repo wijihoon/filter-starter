@@ -15,7 +15,7 @@ import com.shinhancard.toss.exception.ErrorCode;
 import com.shinhancard.toss.exception.InvalidTokenException;
 import com.shinhancard.toss.exception.TokenCreationException;
 import com.shinhancard.toss.io.TokenResponse;
-import com.shinhancard.toss.properties.JwtTokenProperties;
+import com.shinhancard.toss.properties.TokenProperties;
 import com.shinhancard.toss.service.TokenService;
 
 import io.jsonwebtoken.Claims;
@@ -36,7 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TokenServiceImpl implements TokenService {
 
-	private final JwtTokenProperties jwtTokenProperties; // JWT 토큰 설정 값
+	private final TokenProperties tokenProperties; // JWT 토큰 설정 값
 	private SecretKey secretKey;
 
 	/**
@@ -66,7 +66,7 @@ public class TokenServiceImpl implements TokenService {
 	public TokenResponse createToken(TokenResponse jwtResponse) {
 		try {
 			Date now = new Date();
-			Date validity = new Date(now.getTime() + jwtTokenProperties.getValidity());
+			Date validity = new Date(now.getTime() + tokenProperties.getValidity());
 
 			String accessToken = Jwts.builder()
 				.setClaims(new ObjectMapper().convertValue(jwtResponse, new TypeReference<Map<String, Object>>() {
@@ -76,7 +76,7 @@ public class TokenServiceImpl implements TokenService {
 				.signWith(SignatureAlgorithm.HS256, secretKey) // 서명 설정 (HS256 알고리즘 사용)
 				.compact(); // 토큰 생성
 
-			return new TokenResponse(accessToken, jwtTokenProperties.getValidity());
+			return new TokenResponse(accessToken, tokenProperties.getValidity());
 		} catch (Exception e) {
 			log.error("Token creation failed: {}", e.getMessage());
 			throw new TokenCreationException(ErrorCode.TOKEN_CREATION_FAILED);

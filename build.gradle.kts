@@ -1,3 +1,5 @@
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+
 // 프로젝트 메타데이터 설정
 val artifactName = "Private Label Credit Card API"
 val projectOwner = "Shinhancard Platform Development"
@@ -29,7 +31,10 @@ val versions = mapOf(
         "mockito" to "5.12.0", // Mockito 버전
         "assertj" to "3.26.0", // AssertJ 버전
         "commons-pool" to "2.12.0", // Commons Pool 버전
-        "lettuce-core" to "6.3.2" // Lettuce Core 버전
+        "lettuce-core" to "6.3.2", // Lettuce Core 버전
+        "jaxb-api" to "2.3.1", // JAXB API 버전
+        "jaxb-runtime" to "2.3.1", // JAXB Runtime 버전
+        "owasp-encoder" to "1.3.1" // OWASP Java Encoder 버전
 )
 
 // 프로젝트 메타데이터 설정
@@ -37,7 +42,11 @@ group = "com.shinhancard" // 그룹 ID
 version = "0.0.1-SNAPSHOT" // 버전
 
 // Jar 및 BootJar 설정
-tasks.bootJar {
+tasks.withType<Jar> {
+    archiveFileName.set("${artifactName.replace(" ", "-")}-${version}.jar") // 아카이브 파일 이름
+}
+
+tasks.withType<BootJar> {
     manifest {
         attributes(
                 "Implementation-Title" to artifactName, // 구현 제목
@@ -46,19 +55,14 @@ tasks.bootJar {
                 "Created-By" to projectOwner // 프로젝트 소유자
         )
     }
-    archiveFileName.set("${artifactName.replace(" ", "-")}-${version}.jar") // 아카이브 파일 이름
     isEnabled = true
-}
-
-tasks.jar {
-    isEnabled = false // 기본 Jar 작업 비활성화
 }
 
 // 리포지토리 설정
 repositories {
     mavenCentral() // 기본 Maven Central Repository
-    maven { url = uri("https://repo.spring.io/milestone") } // Spring Milestone Repository
-    maven { url = uri("https://repo.spring.io/snapshot") } // Spring Snapshot Repository
+    maven("https://repo.spring.io/milestone") // Spring Milestone Repository
+    maven("https://repo.spring.io/snapshot") // Spring Snapshot Repository
 }
 
 // 의존성 설정
@@ -73,10 +77,11 @@ dependencies {
 
     // JWT 관련 라이브러리
     implementation("io.jsonwebtoken:jjwt:${versions["jjwt"]}") // JJWT
+
     // JAXB API
-    implementation("javax.xml.bind:jaxb-api:2.3.1")
+    implementation("javax.xml.bind:jaxb-api:${versions["jaxb-api"]}")
     // JAXB Runtime
-    implementation("org.glassfish.jaxb:jaxb-runtime:2.3.1")
+    implementation("org.glassfish.jaxb:jaxb-runtime:${versions["jaxb-runtime"]}")
 
     // 로깅 관련 라이브러리
     implementation("ch.qos.logback:logback-classic:${versions["logback"]}") // Logback Classic
@@ -85,13 +90,14 @@ dependencies {
     // Lombok 라이브러리
     compileOnly("org.projectlombok:lombok") // Lombok
     annotationProcessor("org.projectlombok:lombok") // Lombok Annotation Processor
-    testCompileOnly("org.projectlombok:lombok") // Lombok for Test
-    testAnnotationProcessor("org.projectlombok:lombok") // Lombok Annotation Processor for Test
 
     // Springdoc OpenAPI 관련 라이브러리
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:${versions["springdoc"]}") // Springdoc OpenAPI Starter Web MVC UI
 
     implementation("org.apache.commons:commons-pool2:${versions["commons-pool"]}") // Commons Pool2
+
+    // OWASP Java Encoder
+    implementation("org.owasp.encoder:encoder:${versions["owasp-encoder"]}") // OWASP Java Encoder
 
     // 테스트 관련 의존성
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
