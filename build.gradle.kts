@@ -72,11 +72,12 @@ subprojects {
     }
 }
 
-// Main project dependencies (if applicable)
+// Main project dependencies
 dependencies {
+    implementation("org.springframework.boot:spring-boot-starter")
     implementation(project(":common"))
     implementation(project(":cors"))
-    implementation(project(":logging"))
+    implementation(project(":log"))
     implementation(project(":xss"))
     implementation(project(":csrf"))
 }
@@ -84,4 +85,10 @@ dependencies {
 // Spring Boot build info
 springBoot {
     buildInfo()
+}
+
+// Define the main class for bootJar
+tasks.withType<BootJar> {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    mainClass.set("shinhancard.core.FilterCoreApplication") // 메인 클래스의 경로를 설정합니다.
 }

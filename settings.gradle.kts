@@ -1,7 +1,7 @@
-rootProject.name = "filter-project"
+rootProject.name = "filter-core"
 
 include(":common")
 include(":cors")
-include(":logging")
+include(":log")
 include(":xss")
 include(":csrf")
