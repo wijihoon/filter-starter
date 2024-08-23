@@ -53,6 +53,7 @@ subprojects {
     }
 
     tasks.withType<BootJar> {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         manifest {
             attributes(
                     "Implementation-Title" to artifactName,
@@ -84,11 +85,10 @@ dependencies {
 
 // Spring Boot build info
 springBoot {
+    mainClass.set("shinhancard.core.FilterCoreApplication") // 메인 클래스를 지정합니다.
     buildInfo()
 }
 
-// Define the main class for bootJar
 tasks.withType<BootJar> {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    mainClass.set("shinhancard.core.FilterCoreApplication") // 메인 클래스의 경로를 설정합니다.
 }

@@ -33,5 +33,5 @@ tasks.withType<BootJar> {
                 "Created-By" to projectOwner
         )
     }
-    isEnabled = true
+    isEnabled = false
 }

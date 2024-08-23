@@ -1,21 +1,34 @@
-// 프로젝트 메타데이터 설정
-val artifactName = "Private Label Credit Card API"
-val projectOwner = "Shinhancard Platform Development"
-val repositoryURL = "https://gitlab.shinhancard.com/pla/oauth-backend"
-val licenseName = "MIT License"
-val licenseURL = "https://opensource.org/license/mit/"
+import org.springframework.boot.gradle.tasks.bundling.BootJar
 
-// 플러그인 버전 설정
+// Access shared properties
+val artifactName: String by rootProject.extra
+val projectOwner: String by rootProject.extra
+
 plugins {
-    id("java") // Java 플러그인
+    id("java")
+    id("org.springframework.boot")
+    id("io.spring.dependency-management")
 }
 
-// Jar 및 BootJar 설정
-tasks.withType<Jar> {
-    archiveFileName.set("${artifactName.replace(" ", "-")}-${version}.jar") // 아카이브 파일 이름
-}
-
-// 의존성 설정
+// Project metadata and dependencies
 dependencies {
     implementation(project(":common"))
+}
+
+// Jar settings
+tasks.withType<Jar> {
+    archiveFileName.set("${artifactName.replace(" ", "-").lowercase()}-${version}.jar")
+}
+
+// BootJar settings (if needed)
+tasks.withType<BootJar> {
+    manifest {
+        attributes(
+                "Implementation-Title" to artifactName,
+                "Automatic-Module-Name" to artifactName,
+                "Implementation-Version" to version,
+                "Created-By" to projectOwner
+        )
+    }
+    isEnabled = false
 }
