@@ -13,6 +13,7 @@ plugins {
 // Project metadata and dependencies
 dependencies {
     implementation("org.springframework.kafka:spring-kafka") // Kafka starter
+    implementation("org.springframework.boot:spring-boot-starter-webflux") // WebFlux starter
 
     implementation(project(":common"))
 }
