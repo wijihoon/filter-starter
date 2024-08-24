@@ -1,7 +1,9 @@
 rootProject.name = "filter-core"
 
-include(":common")
-include(":cors")
-include(":log")
-include(":xss")
-include(":csrf")
+include(":common-module")
+include(":cors-module")
+include(":logging-module")
+include(":xss-module")
+include(":csrf-module")
+include(":sql-injection-module")
+include(":filter-starter")
