@@ -2,8 +2,6 @@ package shinhancard.sql.filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -13,9 +11,6 @@ import shinhancard.sql.properties.SQLInjectionProperties;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Map;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * SQL 인젝션을 방지하는 필터 클래스입니다.
@@ -48,13 +43,17 @@ public class SQLInjectionFilter extends OncePerRequestFilter {
         request.getParameterMap().forEach((name, values) -> {
             Arrays.stream(values).forEach(value -> {
                 if (value != null && sqlInjectionProperties.getCompiledPattern().matcher(value).find()) {
-                    throw new ServletException("SQL Injection detected in parameter: " + name);
+                    try {
+                        throw new ServletException("SQL Injection detected in parameter: " + name);
+                    } catch (ServletException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             });
         });
     }
 
-    private void validateRequestBody(WrappedHttpServletRequest request) {
+    private void validateRequestBody(WrappedHttpServletRequest request) throws ServletException {
         String body = request.getBody();
         if (sqlInjectionProperties.getCompiledPattern().matcher(body).find()) {
             throw new ServletException("SQL Injection detected in request body.");
@@ -65,7 +64,11 @@ public class SQLInjectionFilter extends OncePerRequestFilter {
         if (request.getCookies() != null) {
             Arrays.stream(request.getCookies()).forEach(cookie -> {
                 if (sqlInjectionProperties.getCompiledPattern().matcher(cookie.getValue()).find()) {
-                    throw new ServletException("SQL Injection detected in cookie: " + cookie.getName());
+                    try {
+                        throw new ServletException("SQL Injection detected in cookie: " + cookie.getName());
+                    } catch (ServletException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             });
         }
