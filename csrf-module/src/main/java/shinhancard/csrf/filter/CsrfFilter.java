@@ -30,6 +30,8 @@ public class CsrfFilter extends OncePerRequestFilter {
     @Autowired
     public CsrfFilter(CsrfProperties csrfProperties) {
         this.csrfProperties = csrfProperties;
+        log.debug("CsrfProperties가 초기화되었습니다: X-Frame-Options={}, X-XSS-Protection={}, X-Content-Type-Options={}",
+                csrfProperties.getXFrameOptions(), csrfProperties.getXXssProtection(), csrfProperties.getXContentTypeOptions());
     }
 
     /**
@@ -45,7 +47,6 @@ public class CsrfFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        // 보안 관련 헤더 추가 (값이 설정된 경우에만)
         addHeaderIfNotEmpty(response, "X-Frame-Options", csrfProperties.getXFrameOptions());
         addHeaderIfNotEmpty(response, "X-XSS-Protection", csrfProperties.getXXssProtection());
         addHeaderIfNotEmpty(response, "X-Content-Type-Options", csrfProperties.getXContentTypeOptions());
@@ -62,7 +63,7 @@ public class CsrfFilter extends OncePerRequestFilter {
      * @param headerValue 헤더의 값
      */
     private void addHeaderIfNotEmpty(HttpServletResponse response, String header, String headerValue) {
-        if (headerValue != null && !headerValue.isEmpty()) {
+        if (headerValue != null && !headerValue.trim().isEmpty()) {
             response.setHeader(header, headerValue);
             log.debug("{} 헤더가 설정되었습니다: {}", header, headerValue);
         }

@@ -7,6 +7,8 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
+
 /**
  * 로그 설정을 담고 있는 객체입니다.
  * <p>
@@ -42,6 +44,12 @@ public class LogProperties {
      */
     @NotNull(message = "로그 전송 방식은 null일 수 없습니다.")
     private String logDestination = "kafka"; // 기본값 설정 (예: kafka)
+
+    /**
+     * 마스킹할 민감 정보 필드 목록입니다.
+     * 기본값으로 "password"와 "cardNumber"가 설정되어 있습니다.
+     */
+    private List<String> sensitiveFields = List.of("password", "cardNumber"); // 기본값 설정
 
     /**
      * 설정된 값들을 검증하여 유효성을 확인합니다.
