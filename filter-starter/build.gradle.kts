@@ -5,6 +5,11 @@ plugins {
     id("maven-publish")
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
 dependencies {
     implementation(project(":common-module"))
     implementation(project(":logging-module"))
@@ -35,6 +40,22 @@ publishing {
                 name.set("Filter Starter")
                 description.set("Starter module that integrates all filters and services.")
                 url.set("http://www.example.com")
+                licenses {
+                    license {
+                        name.set("The Apache License, Version 2.0")
+                        url.set("http://www.apache.org/licenses/LICENSE-2.0")
+                    }
+                }
+                developers {
+                    developer {
+                        id.set("developerId")
+                        name.set("Developer Name")
+                        email.set("developer@example.com")
+                    }
+                }
+                scm {
+                    url.set("http://www.example.com/scm")
+                }
             }
         }
     }
@@ -43,8 +64,8 @@ publishing {
             url = uri("http://localhost:8081/repository/maven-releases/")
             isAllowInsecureProtocol = true
             credentials {
-                username = project.findProperty("nexusUsername") as String? ?: "admin"
-                password = project.findProperty("nexusPassword") as String? ?: "admin"
+                username = findProperty("nexusUsername") as String? ?: System.getenv("NEXUS_USERNAME") ?: "admin"
+                password = findProperty("nexusPassword") as String? ?: System.getenv("NEXUS_PASSWORD") ?: "admin"
             }
         }
     }
