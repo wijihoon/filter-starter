@@ -27,16 +27,21 @@ public class SQLInjectionProperties {
 	/**
 	 * SQL 인젝션 공격을 탐지할 패턴 리스트입니다.
 	 * <p>
-	 * 기본값은 비어 있는 리스트로 설정되어 있습니다. 설정 파일에서 값을 제공해야 합니다.
+	 * 기본값은 SQL 인젝션 공격 시도를 탐지할 수 있는 다양한 패턴을 포함하고 있습니다.
 	 * </p>
 	 */
 	private List<String> patterns = List.of(
-		"[';]+|(--)", // SQL 주석 및 SQL 주입
-		"union.*select", // UNION SELECT
-		"select.*from", // SELECT FROM
-		"insert.*into", // INSERT INTO
-		"update.*set", // UPDATE SET
-		"delete.*from" // DELETE FROM
+		"([';]+|(--))", // SQL 주석 및 주입
+		"(union.*select|select.*from|insert.*into|update.*set|delete.*from)", // 주요 SQL 명령어 패턴
+		"(select.*from.*where.*\\d+\\s*or\\s*\\d+.*=\\d+)", // 숫자 기반 SQL 인젝션
+		"(select.*from.*where.*\\d+\\s*and\\s*1=1)", // 1=1 SQL 인젝션
+		"(sleep\\s*\\(\\d+\\))", // 시간 기반 SQL 인젝션
+		"(benchmark\\s*\\(\\d+,\\s*md5\\(\\d+\\)\\))", // SQL 인젝션의 벤치마크 함수
+		"('(?:[^']|\\\\')*'\\s*--)", // 문자열 종료 및 SQL 주석
+		"(@@version|@@global.sql_mode|@@hostname|@@user)", // SQL 서버 설정 변수
+		"('(?:[^']|\\\\')*'\\s*or\\s*'[^']*'\\s*='[^']*)", // OR 기반 SQL 인젝션
+		"(information_schema.tables|information_schema.columns)", // 정보 스키마 테이블 탐색
+		"(admin|root|user|select|drop|truncate|create|alter|exec|grant|revoke|union|order|by|--|;|#|/*|*/)"
 	);
 
 	/**

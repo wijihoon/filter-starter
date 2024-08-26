@@ -97,9 +97,35 @@ public enum ErrorCode {
 	 */
 	SQL_INJECTION_COOKIE_DETECTED("SQL_INJECTION_COOKIE_DETECTED", "쿠키에서 SQL 인젝션이 감지되었습니다", HttpStatus.BAD_REQUEST),
 
-	JSON_PROCESSING_ERROR("JSON_PROCESSING_ERROR", "Failed to process JSON", HttpStatus.INTERNAL_SERVER_ERROR);
+	/**
+	 * JSON 처리 오류 코드.
+	 * <p>
+	 * JSON을 처리하는 동안 오류가 발생한 경우 발생합니다.
+	 * </p>
+	 */
+	JSON_PROCESSING_ERROR("JSON_PROCESSING_ERROR", "JSON 처리 중 오류가 발생했습니다", HttpStatus.INTERNAL_SERVER_ERROR);
 
-	private final String code; // 에러 코드
-	private final String message; // 에러 메시지
-	private final HttpStatus httpStatus; // HTTP 상태 코드
+	/**
+	 * 에러 코드.
+	 * <p>
+	 * 각 에러 코드의 고유 식별자입니다.
+	 * </p>
+	 */
+	private final String code;
+
+	/**
+	 * 에러 메시지.
+	 * <p>
+	 * 에러에 대한 설명 메시지입니다.
+	 * </p>
+	 */
+	private final String message;
+
+	/**
+	 * HTTP 상태 코드.
+	 * <p>
+	 * 에러 발생 시 클라이언트에 반환될 HTTP 상태 코드입니다.
+	 * </p>
+	 */
+	private final HttpStatus httpStatus;
 }

@@ -68,6 +68,8 @@ public class CsrfFilter extends OncePerRequestFilter {
 		if (headerValue != null && !headerValue.trim().isEmpty()) {
 			response.setHeader(header, headerValue);
 			log.debug("{} 헤더가 설정되었습니다: {}", header, headerValue);
+		} else {
+			log.debug("{} 헤더가 비어있거나 null입니다. 설정하지 않습니다.", header);
 		}
 	}
 }

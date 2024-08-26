@@ -35,7 +35,7 @@ public class XSSProperties {
 	/**
 	 * XSS 공격을 탐지할 패턴 리스트입니다.
 	 * <p>
-	 * 기본값은 비어 있는 리스트로 설정되어 있습니다. 설정 파일에서 값을 제공해야 합니다.
+	 * 기본값은 XSS 공격 시도를 탐지할 수 있는 다양한 패턴을 포함하고 있습니다.
 	 * </p>
 	 */
 	private List<String> patterns = List.of(
@@ -61,7 +61,16 @@ public class XSSProperties {
 		"<embed.*?>", // embed 태그
 		"<form.*?>", // form 태그
 		"<style.*?>", // style 태그
-		"<.*?data-.*?>" // data 속성
+		"<.*?data-.*?>", // data 속성
+		"<.*?(on|vbs|jsc|expression).*?>", // 다양한 이벤트 및 스크립트 속성
+		"javascript:.*", // javascript 프로토콜
+		"vbscript:.*", // vbscript 프로토콜
+		"data:.*", // data URIs
+		"document\\.(write|cookie|location|body)", // Document 객체 메서드 및 속성
+		"window\\.(open|alert|confirm|prompt)", // Window 객체 메서드
+		"eval\\(.*?\\)", // eval 함수
+		"((.*?\\b(?:onload|onerror|onclick|onmouseover|onfocus|onchange|oninput|onabort|onbeforeunload|src|href|background)\\b.*?=\\s*['\"].*?['\"])|(.*?\\b(?:javascript|vbscript|data):.*?['\"].*?['\"]))"
+		// 다양한 이벤트 및 프로토콜
 	);
 
 	/**

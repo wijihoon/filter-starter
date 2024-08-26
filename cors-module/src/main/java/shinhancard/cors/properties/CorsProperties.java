@@ -1,6 +1,5 @@
 package shinhancard.cors.properties;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -33,25 +32,34 @@ public class CorsProperties {
 	 * "*"을 설정하면 모든 도메인에서의 요청을 허용합니다.
 	 * </p>
 	 */
-	private List<String> allowedOrigins = Collections.singletonList("*");
+	private List<String> allowedOrigins = List.of(
+		"http://example.com",
+		"http://another-domain.com"
+	);
 
 	/**
 	 * 허용할 HTTP 메서드 목록입니다.
 	 * <p>
-	 * 이 목록에 포함된 HTTP 메서드만 허용합니다. 기본값은 모든 메서드를 허용하도록 설정되어 있습니다.
-	 * "*"을 설정하면 모든 HTTP 메서드를 허용합니다.
+	 * 이 목록에 포함된 HTTP 메서드만 허용합니다. 기본값은 GET, POST, PUT, DELETE 메서드를 허용합니다.
 	 * </p>
 	 */
-	private List<String> allowedMethods = Collections.singletonList("*");
+	private List<String> allowedMethods = List.of(
+		"GET",
+		"POST",
+		"PUT",
+		"DELETE"
+	);
 
 	/**
 	 * 허용할 HTTP 헤더 목록입니다.
 	 * <p>
-	 * 이 목록에 포함된 헤더만 허용됩니다. 기본값은 모든 헤더를 허용하도록 설정되어 있습니다.
-	 * "*"을 설정하면 모든 HTTP 헤더를 허용합니다.
+	 * 이 목록에 포함된 헤더만 허용됩니다. 기본값은 Authorization, Content-Type 헤더를 허용합니다.
 	 * </p>
 	 */
-	private List<String> allowedHeaders = Collections.singletonList("*");
+	private List<String> allowedHeaders = List.of(
+		"Authorization",
+		"Content-Type"
+	);
 
 	/**
 	 * 자격 증명(쿠키, 인증 정보 등)을 포함한 요청 허용 여부입니다.
