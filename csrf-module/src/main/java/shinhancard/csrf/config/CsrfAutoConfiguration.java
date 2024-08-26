@@ -29,7 +29,7 @@ public class CsrfAutoConfiguration {
 	public FilterRegistrationBean<CsrfFilter> csrfFilterRegistration() {
 		FilterRegistrationBean<CsrfFilter> registrationBean = new FilterRegistrationBean<>();
 		registrationBean.setFilter(new CsrfFilter(csrfProperties));
-		registrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE + 2); // CSRF 필터의 순서를 설정
+		registrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE + 4); // CSRF 필터의 순서를 설정
 		return registrationBean;
 	}
 }

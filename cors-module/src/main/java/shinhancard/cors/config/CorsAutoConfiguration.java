@@ -5,6 +5,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -67,7 +68,7 @@ public class CorsAutoConfiguration {
 	public FilterRegistrationBean<CorsFilter> corsFilterRegistration(CorsConfigurationSource corsConfigurationSource) {
 		FilterRegistrationBean<CorsFilter> registrationBean = new FilterRegistrationBean<>();
 		registrationBean.setFilter(new CorsFilter(corsConfigurationSource));
-		registrationBean.setOrder(0); // 가장 먼저 실행되도록 설정
+		registrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE + 1); // 가장 먼저 실행되도록 설정
 		return registrationBean;
 	}
 }

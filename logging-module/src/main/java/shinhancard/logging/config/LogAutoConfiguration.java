@@ -81,7 +81,7 @@ public class LogAutoConfiguration {
 	public FilterRegistrationBean<LogFilter> logFilterRegistration(LogService logService) {
 		FilterRegistrationBean<LogFilter> registrationBean = new FilterRegistrationBean<>();
 		registrationBean.setFilter(new LogFilter(logProperties, logService));
-		registrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE + 1); // 필터의 순서를 설정 (최우선순위)
+		registrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE); // 필터의 순서를 설정 (최우선순위)
 		return registrationBean;
 	}
 }
