@@ -2,8 +2,9 @@ package shinhancard.common.io;
 
 import org.springframework.http.HttpStatus;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import shinhancard.common.exception.JsonProcessingException;
 
 /**
  * 응답 데이터를 표현하는 불변 객체입니다.
@@ -73,8 +74,8 @@ public record ResponseVo<T>(
 	public String toString() {
 		try {
 			return objectMapper.writeValueAsString(this);
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException("Failed to convert ResponseVo to JSON string", e);
+		} catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+			throw new JsonProcessingException(ErrorCode.JSON_PROCESSING_ERROR);
 		}
 	}
 }

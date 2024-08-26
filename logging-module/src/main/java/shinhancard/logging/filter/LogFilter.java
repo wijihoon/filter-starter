@@ -35,6 +35,7 @@ public class LogFilter extends OncePerRequestFilter {
 
 	private static final String CONTEXT_HTTP_REQUEST = "REQUEST";
 	private static final String CONTEXT_HTTP_RESPONSE = "RESPONSE";
+	private static final String TRACE_ID_KEY = "traceId"; // 상수로 정의
 	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper(); // JSON 변환기, 싱글턴으로 재사용
 	private final LogProperties logProperties;
 	private final LogService logService;
@@ -65,7 +66,7 @@ public class LogFilter extends OncePerRequestFilter {
 		WrappedHttpServletRequest wrappedRequest = new WrappedHttpServletRequest(request);
 		WrappedHttpServletResponse wrappedResponse = new WrappedHttpServletResponse(response);
 		String traceId = UUID.randomUUID().toString(); // 고유한 트레이스 ID 생성
-		MDC.put("traceId", traceId);
+		MDC.put(TRACE_ID_KEY, traceId);
 
 		try {
 			logRequest(wrappedRequest, traceId);
@@ -129,7 +130,7 @@ public class LogFilter extends OncePerRequestFilter {
 	 */
 	private Map<String, Object> buildRequestLogData(WrappedHttpServletRequest request, String traceId) {
 		Map<String, Object> logData = new HashMap<>();
-		logData.put("traceId", traceId);
+		logData.put(TRACE_ID_KEY, traceId);
 		logData.put("method", request.getMethod());
 		logData.put("uri", request.getRequestURI());
 		logData.put("query", request.getQueryString());
@@ -152,7 +153,7 @@ public class LogFilter extends OncePerRequestFilter {
 	 */
 	private Map<String, Object> buildResponseLogData(WrappedHttpServletResponse response, String traceId) {
 		Map<String, Object> logData = new HashMap<>();
-		logData.put("traceId", traceId);
+		logData.put(TRACE_ID_KEY, traceId);
 		logData.put("status", response.getStatus());
 		logData.put("headers", getHeadersMap(response));
 

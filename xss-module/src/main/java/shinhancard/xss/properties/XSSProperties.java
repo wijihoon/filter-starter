@@ -89,7 +89,7 @@ public class XSSProperties {
 	public Pattern getCompiledPattern() {
 		if (!enabled || patterns.isEmpty()) {
 			// XSS 필터가 비활성화된 경우 또는 패턴이 비어 있는 경우 빈 패턴을 반환
-			return Pattern.compile("^(?!)$"); // 항상 false를 반환하는 빈 패턴
+			return Pattern.compile(""); // 빈 문자열 패턴
 		}
 
 		// 중복 패턴 제거 및 패턴 병합

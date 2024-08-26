@@ -95,7 +95,9 @@ public enum ErrorCode {
 	 * 쿠키에서 SQL 인젝션이 감지된 경우 발생합니다.
 	 * </p>
 	 */
-	SQL_INJECTION_COOKIE_DETECTED("SQL_INJECTION_COOKIE_DETECTED", "쿠키에서 SQL 인젝션이 감지되었습니다", HttpStatus.BAD_REQUEST);
+	SQL_INJECTION_COOKIE_DETECTED("SQL_INJECTION_COOKIE_DETECTED", "쿠키에서 SQL 인젝션이 감지되었습니다", HttpStatus.BAD_REQUEST),
+
+	JSON_PROCESSING_ERROR("JSON_PROCESSING_ERROR", "Failed to process JSON", HttpStatus.INTERNAL_SERVER_ERROR);
 
 	private final String code; // 에러 코드
 	private final String message; // 에러 메시지

@@ -31,12 +31,12 @@ public class SQLInjectionProperties {
 	 * </p>
 	 */
 	private List<String> patterns = List.of(
-		".*([';]+|(--)).*", // SQL 주석 및 SQL 주입
-		".*union.*select.*", // UNION SELECT
-		".*select.*from.*", // SELECT FROM
-		".*insert.*into.*", // INSERT INTO
-		".*update.*set.*", // UPDATE SET
-		".*delete.*from.*" // DELETE FROM
+		"[';]+|(--)", // SQL 주석 및 SQL 주입
+		"union.*select", // UNION SELECT
+		"select.*from", // SELECT FROM
+		"insert.*into", // INSERT INTO
+		"update.*set", // UPDATE SET
+		"delete.*from" // DELETE FROM
 	);
 
 	/**
@@ -62,10 +62,12 @@ public class SQLInjectionProperties {
 	 */
 	public Pattern getCompiledPattern() {
 		if (patterns.isEmpty()) {
-			return Pattern.compile("^(?!)$"); // 항상 false를 반환하는 빈 패턴
+			return Pattern.compile(""); // 빈 문자열 패턴
 		}
 
+		// 빈 패턴을 제거하고 조합
 		String combinedPattern = patterns.stream()
+			.filter(pattern -> !pattern.trim().isEmpty()) // 빈 패턴 필터링
 			.distinct()
 			.collect(Collectors.joining("|"));
 

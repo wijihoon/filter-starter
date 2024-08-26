@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -179,9 +178,9 @@ public class CorsFilter extends OncePerRequestFilter {
 		Set<String> allowedHeaderSet = new HashSet<>(allowedHeaders);
 		Enumeration<String> requestHeaderNames = request.getHeaderNames();
 		List<String> requestHeaders = requestHeaderNames != null ?
-			Collections.list(requestHeaderNames).stream().map(String::trim).collect(Collectors.toList()) :
+			Collections.list(requestHeaderNames).stream().map(String::trim).toList() :
 			Collections.emptyList();
-		boolean areHeadersAllowed = requestHeaders.stream().allMatch(allowedHeaderSet::contains);
+		boolean areHeadersAllowed = allowedHeaderSet.containsAll(requestHeaders);
 
 		log.debug("CORS 헤더 검증 결과: 요청 헤더={}, 허용된 헤더 목록={}, 검증 결과={}",
 			requestHeaders, allowedHeaders, areHeadersAllowed);

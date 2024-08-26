@@ -30,6 +30,10 @@ import shinhancard.xss.properties.XSSProperties;
 @Component
 public class XSSFilter extends OncePerRequestFilter {
 
+	private static final String PARAMETER_SOURCE = "parameter";
+	private static final String COOKIE_SOURCE = "cookie";
+	private static final String BODY_SOURCE = "body";
+
 	private final XSSProperties xssProperties;
 
 	/**
@@ -116,14 +120,14 @@ public class XSSFilter extends OncePerRequestFilter {
 	 */
 	private boolean isXssDetectedInParameter(String paramName, HttpServletRequest request,
 		HttpServletResponse response) throws IOException {
-		if (checkForXss(paramName, "parameter", response)) {
+		if (checkForXss(paramName, PARAMETER_SOURCE, response)) {
 			return true;
 		}
 
 		String[] paramValues = request.getParameterValues(paramName);
 		if (paramValues != null) {
 			for (String paramValue : paramValues) {
-				if (checkForXss(paramValue, "parameter", response)) {
+				if (checkForXss(paramValue, PARAMETER_SOURCE, response)) {
 					return true;
 				}
 			}
@@ -156,7 +160,7 @@ public class XSSFilter extends OncePerRequestFilter {
 				continue;
 			}
 
-			if (checkForXss(cookieName, "cookie", response) || checkForXss(cookieValue, "cookie", response)) {
+			if (checkForXss(cookieName, COOKIE_SOURCE, response) || checkForXss(cookieValue, COOKIE_SOURCE, response)) {
 				log.debug("XSS 감지됨: 쿠키 이름 [{}] 또는 값 [{}]", cookieName, cookieValue);
 				return true;
 			}
@@ -177,7 +181,7 @@ public class XSSFilter extends OncePerRequestFilter {
 	private boolean checkForXssInRequestBody(WrappedHttpServletRequest request, HttpServletResponse response) throws
 		IOException {
 		String body = request.getBody();
-		return checkForXss(body, "body", response);
+		return checkForXss(body, BODY_SOURCE, response);
 	}
 
 	/**
@@ -233,9 +237,9 @@ public class XSSFilter extends OncePerRequestFilter {
 	 */
 	private ErrorCode getErrorCodeForSource(String source) {
 		return switch (source) {
-			case "parameter" -> ErrorCode.XSS_IN_PARAMETER;
-			case "cookie" -> ErrorCode.XSS_IN_COOKIE;
-			case "body" -> ErrorCode.XSS_IN_BODY;
+			case PARAMETER_SOURCE -> ErrorCode.XSS_IN_PARAMETER;
+			case COOKIE_SOURCE -> ErrorCode.XSS_IN_COOKIE;
+			case BODY_SOURCE -> ErrorCode.XSS_IN_BODY;
 			default -> ErrorCode.XSS_DETECTED;
 		};
 	}
