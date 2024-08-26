@@ -55,3 +55,13 @@ csrf:
     xXssProtection: 1; mode=block
     xContentTypeOptions: nosniff
 ```
+
+## 응답 예시
+
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
+X-Frame-Options: DENY
+X-XSS-Protection: 1; mode=block
+X-Content-Type-Options: nosniff
+```

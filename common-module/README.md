@@ -94,5 +94,4 @@ public class ResponseCachingFilter implements Filter {
 		// 필요에 따라 응답 본문을 수정하거나 로그를 기록할 수 있음
 	}
 }
-
 ```

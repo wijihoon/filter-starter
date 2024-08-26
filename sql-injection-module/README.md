@@ -84,3 +84,75 @@ SQL 인젝션 필터가 SQL 인젝션을 감지한 경우, 다음과 같은 방�
 - **로그 기록**: 감지된 SQL 인젝션에 대한 경고 메시지가 로그에 기록됩니다. 로그 메시지에는 감지된 SQL 인젝션의 위치와 관련된 정보가 포함됩니다.
 
 필터가 SQL 인젝션을 감지할 경우, 애플리케이션은 요청을 처리하지 않고 오류 응답을 반환합니다. 이는 보안 위협을 방지하고, 악성 요청이 시스템에 영향을 미치지 않도록 합니다.
+
+## 요청 / 응답 예시
+
+SQL 인젝션 공격이 포함된 요청과 응답 예시 요청:
+
+```http
+POST /api/user/login HTTP/1.1
+Host: example.com
+Content-Type: application/json
+
+{
+    "username": "admin' OR '1'='1",
+    "password": "password"
+}
+```
+
+응답:
+
+```http
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+
+{
+    "success": false,
+    "message": "SQL Injection detected in request body",
+    "data": null,
+    "status": "BAD_REQUEST"
+}
+```
+
+SQL 인젝션 공격이 포함된 URL 파라미터 요청과 응답 예시 요청:
+
+```http
+GET /api/user/search?query=admin' OR '1'='1 HTTP/1.1
+Host: example.com
+```
+
+응답:
+
+```http
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+
+{
+    "success": false,
+    "message": "SQL Injection detected in request parameter",
+    "data": null,
+    "status": "BAD_REQUEST"
+}
+```
+
+SQL 인젝션 공격이 포함된 쿠키 요청과 응답 예시 요청:
+
+```http
+GET /api/user/profile HTTP/1.1
+Host: example.com
+Cookie: sessionId=' OR '1'='1
+```
+
+응답:
+
+```http
+HTTP/1.1 400 Bad Request
+Content-Type: application/json
+
+{
+    "success": false,
+    "message": "SQL Injection detected in cookie",
+    "data": null,
+    "status": "BAD_REQUEST"
+}
+```

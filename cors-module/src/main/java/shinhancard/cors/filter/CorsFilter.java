@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
@@ -211,7 +210,7 @@ public class CorsFilter extends OncePerRequestFilter {
 	 */
 	private void handleCorsViolation(HttpServletResponse response, ErrorCode errorCode) throws IOException {
 		log.error("CORS 정책 위반: {}", errorCode.getMessage());
-		response.sendError(HttpStatus.FORBIDDEN.value(),
+		response.sendError(errorCode.getHttpStatus().value(),
 			ResponseVo.error(errorCode.getMessage(), errorCode.getHttpStatus()).toString());
 	}
 }

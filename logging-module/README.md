@@ -55,6 +55,8 @@ dependencies {
 `application.properties` 또는 `application.yml` 파일에서 다음과 같이 설정할 수 있습니다:
 
 ```properties
+# 로그 필터 활성화 여부
+log.enabled=true
 # 요청 본문을 잘라낼지 여부
 log.requestBody.truncate=true
 # 응답 본문을 잘라낼지 여부
@@ -69,6 +71,7 @@ log.sensitiveFields=password,cardNumber,ssn
 
 ```yaml
 log:
+enabled: true
 # 요청 본문을 잘라낼지 여부
 requestBody:
   truncate: true
@@ -206,4 +209,40 @@ loki.url=http://localhost:3100
 ```yaml
 loki:
   url: http://localhost:3100
+```
+
+## 요청(Request) 로그 예시
+
+```json
+{
+  "traceId": "e7f94a7d-6b9f-4b2a-9bdc-0b795324f7e9",
+  "context": "REQUEST",
+  "method": "POST",
+  "uri": "/api/v1/user/login",
+  "query": "source=mobile",
+  "remoteAddress": "192.168.1.100",
+  "headers": {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer abcdef123456",
+    "User-Agent": "Mozilla/5.0",
+    "Accept": "application/json"
+  },
+  "body": "{\"username\":\"validUser\",\"password\":\"[PROTECTED]\"}"
+}
+```
+
+## 응답(Response) 로그 예시
+
+```json
+{
+  "traceId": "e7f94a7d-6b9f-4b2a-9bdc-0b795324f7e9",
+  "context": "RESPONSE",
+  "status": 200,
+  "headers": {
+    "Content-Type": "application/json",
+    "Cache-Control": "no-cache",
+    "Set-Cookie": "sessionId=abc123xyz; HttpOnly; Secure"
+  },
+  "body": "{\"status\":\"OK\",\"message\":\"Login successful\",\"data\":{\"username\":\"validUser\",\"token\":\"abc123xyz\"}}"
+}
 ```

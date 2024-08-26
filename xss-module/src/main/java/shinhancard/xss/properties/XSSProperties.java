@@ -25,6 +25,14 @@ import lombok.Setter;
 public class XSSProperties {
 
 	/**
+	 * XSS 필터 활성화 여부를 설정합니다.
+	 * <p>
+	 * 기본값은 true입니다. 설정 파일에서 값을 제공해야 합니다.
+	 * </p>
+	 */
+	private boolean enabled = true;
+
+	/**
 	 * XSS 공격을 탐지할 패턴 리스트입니다.
 	 * <p>
 	 * 기본값은 비어 있는 리스트로 설정되어 있습니다. 설정 파일에서 값을 제공해야 합니다.
@@ -59,13 +67,14 @@ public class XSSProperties {
 	/**
 	 * 설정된 패턴들을 검증합니다.
 	 * <p>
-	 * 패턴 리스트가 비어 있는 경우, 예외를 발생시킵니다. enable이 true일 때만 검증을 수행합니다.
+	 * 패턴 리스트가 비어 있는 경우, 예외를 발생시킵니다. 필터가 활성화된 경우에만 검증을 수행합니다.
 	 * </p>
 	 */
 	@PostConstruct
 	private void validateProperties() {
-		if (patterns == null || patterns.isEmpty()) {
-			throw new IllegalArgumentException("At least one XSS pattern must be specified.");
+		if (enabled && (patterns == null || patterns.isEmpty())) {
+			throw new IllegalArgumentException(
+				"At least one XSS pattern must be specified when XSS filter is enabled.");
 		}
 	}
 
@@ -78,8 +87,8 @@ public class XSSProperties {
 	 * @return 컴파일된 XSS 패턴
 	 */
 	public Pattern getCompiledPattern() {
-		if (patterns.isEmpty()) {
-			// 기본 패턴이 비어 있는 경우, 빈 패턴을 반환
+		if (!enabled || patterns.isEmpty()) {
+			// XSS 필터가 비활성화된 경우 또는 패턴이 비어 있는 경우 빈 패턴을 반환
 			return Pattern.compile("^(?!)$"); // 항상 false를 반환하는 빈 패턴
 		}
 

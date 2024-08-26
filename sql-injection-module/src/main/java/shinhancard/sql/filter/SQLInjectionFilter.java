@@ -11,6 +11,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import shinhancard.common.io.ErrorCode;
+import shinhancard.common.io.ResponseVo;
 import shinhancard.common.wrapper.WrappedHttpServletRequest;
 import shinhancard.sql.properties.SQLInjectionProperties;
 
@@ -43,76 +45,82 @@ public class SQLInjectionFilter extends OncePerRequestFilter {
 		// 요청을 래핑하여 본문을 캐싱합니다.
 		WrappedHttpServletRequest wrappedRequest = new WrappedHttpServletRequest(request);
 
-		try {
-			// SQL 인젝션 검사 수행
-			validateRequestParameters(wrappedRequest);
-			validateRequestBody(wrappedRequest);
-			validateCookies(wrappedRequest);
+		// SQL 인젝션 검사 수행
+		boolean isParameterSafe = validateRequestParameters(wrappedRequest);
+		boolean isBodySafe = validateRequestBody(wrappedRequest);
+		boolean isCookiesSafe = validateCookies(wrappedRequest);
 
-			// 필터 체인을 계속 진행합니다.
-			filterChain.doFilter(wrappedRequest, response);
-		} catch (ServletException | RuntimeException e) {
-			// 예외 로그 남기기
-			log.error("SQL 인젝션 예외 발생: {}", e.getMessage());
-
-			// 적절한 에러 응답 생성
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "부적절한 요청입니다.");
+		if (!isParameterSafe) {
+			handleSqlInjectionViolation(response, ErrorCode.SQL_INJECTION_PARAMETER_DETECTED);
+			return;
 		}
+
+		if (!isBodySafe) {
+			handleSqlInjectionViolation(response, ErrorCode.SQL_INJECTION_BODY_DETECTED);
+			return;
+		}
+
+		if (!isCookiesSafe) {
+			handleSqlInjectionViolation(response, ErrorCode.SQL_INJECTION_COOKIE_DETECTED);
+			return;
+		}
+
+		// 필터 체인을 계속 진행합니다.
+		filterChain.doFilter(wrappedRequest, response);
 	}
 
 	/**
 	 * 요청 파라미터에서 SQL 인젝션 패턴을 검사합니다.
 	 *
 	 * @param request {@link WrappedHttpServletRequest} 객체
-	 * @throws ServletException SQL 인젝션이 발견된 경우 예외를 던집니다.
+	 * @return 파라미터가 안전한 경우 true, 그렇지 않으면 false
 	 */
-	private void validateRequestParameters(WrappedHttpServletRequest request) throws ServletException {
-		request.getParameterMap().forEach((name, values) -> Arrays.stream(values).forEach(value -> {
-			if (value != null && sqlInjectionProperties.getCompiledPattern().matcher(value).find()) {
-				log.warn("파라미터에서 SQL 인젝션이 감지되었습니다: {}", name);
-				try {
-					throw new ServletException("파라미터에서 SQL 인젝션이 감지되었습니다: " + name);
-				} catch (ServletException e) {
-					throw new RuntimeException(e);
-				}
-			}
-		}));
+	private boolean validateRequestParameters(WrappedHttpServletRequest request) {
+		return request.getParameterMap().entrySet().stream()
+			.flatMap(entry -> Arrays.stream(entry.getValue()))
+			.noneMatch(value -> value != null && sqlInjectionProperties.getCompiledPattern().matcher(value).find());
 	}
 
 	/**
 	 * 요청 본문에서 SQL 인젝션 패턴을 검사합니다.
 	 *
 	 * @param request {@link WrappedHttpServletRequest} 객체
-	 * @throws ServletException SQL 인젝션이 발견된 경우 예외를 던집니다.
+	 * @return 본문이 안전한 경우 true, 그렇지 않으면 false
 	 */
-	private void validateRequestBody(WrappedHttpServletRequest request) throws ServletException {
+	private boolean validateRequestBody(WrappedHttpServletRequest request) {
 		String body = request.getBody();
-		if (body != null && sqlInjectionProperties.getCompiledPattern().matcher(body).find()) {
-			log.warn("요청 본문에서 SQL 인젝션이 감지되었습니다.");
-			throw new ServletException("요청 본문에서 SQL 인젝션이 감지되었습니다.");
-		}
+		return body == null || !sqlInjectionProperties.getCompiledPattern().matcher(body).find();
 	}
 
 	/**
 	 * 요청 쿠키에서 SQL 인젝션 패턴을 검사합니다.
 	 *
 	 * @param request {@link WrappedHttpServletRequest} 객체
-	 * @throws ServletException SQL 인젝션이 발견된 경우 예외를 던집니다.
+	 * @return 쿠키가 안전한 경우 true, 그렇지 않으면 false
 	 */
-	private void validateCookies(WrappedHttpServletRequest request) throws ServletException {
+	private boolean validateCookies(WrappedHttpServletRequest request) {
 		if (request.getCookies() != null) {
-			Arrays.stream(request.getCookies()).forEach(cookie -> {
-				if (cookie.getValue() != null && sqlInjectionProperties.getCompiledPattern()
+			return Arrays.stream(request.getCookies())
+				.noneMatch(cookie -> cookie.getValue() != null && sqlInjectionProperties.getCompiledPattern()
 					.matcher(cookie.getValue())
-					.find()) {
-					log.warn("쿠키에서 SQL 인젝션이 감지되었습니다: {}", cookie.getName());
-					try {
-						throw new ServletException("쿠키에서 SQL 인젝션이 감지되었습니다: " + cookie.getName());
-					} catch (ServletException e) {
-						throw new RuntimeException(e);
-					}
-				}
-			});
+					.find());
 		}
+		return true;
+	}
+
+	/**
+	 * SQL 인젝션 감지 시 에러 응답을 처리합니다.
+	 *
+	 * @param response {@link HttpServletResponse} 객체
+	 * @param errorCode {@link ErrorCode} 에러 코드
+	 * @throws IOException 입출력 예외
+	 */
+	private void handleSqlInjectionViolation(HttpServletResponse response, ErrorCode errorCode) throws IOException {
+		log.error("SQL 인젝션 예외 발생: {}", errorCode.getMessage());
+		// ErrorCode를 사용하여 에러 응답 생성
+		response.sendError(
+			errorCode.getHttpStatus().value(),
+			ResponseVo.error(errorCode.getMessage(), errorCode.getHttpStatus()).toString()
+		);
 	}
 }

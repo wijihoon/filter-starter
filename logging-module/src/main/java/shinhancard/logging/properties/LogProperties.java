@@ -26,6 +26,14 @@ import lombok.Setter;
 public class LogProperties {
 
 	/**
+	 * 로그 필터 사용 여부를 설정합니다.
+	 * <p>
+	 * 기본값은 true로 설정되어 있습니다. 이 값이 false로 설정되면 로그 필터가 활성화되지 않습니다.
+	 * </p>
+	 */
+	private boolean enabled = true; // 기본값 설정 (예: true)
+
+	/**
 	 * 요청 본문에 대한 설정입니다.
 	 */
 	private RequestBody requestBody = new RequestBody();

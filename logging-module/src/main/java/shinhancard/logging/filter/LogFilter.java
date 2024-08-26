@@ -39,6 +39,12 @@ public class LogFilter extends OncePerRequestFilter {
 	private final LogProperties logProperties;
 	private final LogService logService;
 
+	/**
+	 * LogFilter의 생성자입니다.
+	 *
+	 * @param logProperties 로그 설정을 담고 있는 {@link LogProperties} 객체
+	 * @param logService 로그를 전송하는 {@link LogService} 객체
+	 */
 	public LogFilter(LogProperties logProperties, LogService logService) {
 		this.logProperties = logProperties;
 		this.logService = logService;
@@ -74,6 +80,16 @@ public class LogFilter extends OncePerRequestFilter {
 		}
 	}
 
+	/**
+	 * 요청 정보를 로그로 기록합니다.
+	 * <p>
+	 * 요청의 메소드, URI, 쿼리 문자열, 헤더, 본문 등을 로그로 기록합니다.
+	 * 요청 본문은 설정에 따라 잘라내고 민감한 데이터는 마스킹 처리합니다.
+	 * </p>
+	 *
+	 * @param request 요청을 감싼 {@link WrappedHttpServletRequest} 객체
+	 * @param traceId 요청을 추적하기 위한 고유한 트레이스 ID
+	 */
 	private void logRequest(WrappedHttpServletRequest request, String traceId) {
 		try {
 			MDC.put("context", CONTEXT_HTTP_REQUEST);
@@ -84,6 +100,16 @@ public class LogFilter extends OncePerRequestFilter {
 		}
 	}
 
+	/**
+	 * 응답 정보를 로그로 기록합니다.
+	 * <p>
+	 * 응답의 상태 코드, 헤더, 본문 등을 로그로 기록합니다.
+	 * 응답 본문은 설정에 따라 잘라내고 민감한 데이터는 마스킹 처리합니다.
+	 * </p>
+	 *
+	 * @param response 응답을 감싼 {@link WrappedHttpServletResponse} 객체
+	 * @param traceId 요청을 추적하기 위한 고유한 트레이스 ID
+	 */
 	private void logResponse(WrappedHttpServletResponse response, String traceId) {
 		try {
 			MDC.put("context", CONTEXT_HTTP_RESPONSE);
@@ -94,6 +120,13 @@ public class LogFilter extends OncePerRequestFilter {
 		}
 	}
 
+	/**
+	 * 요청 로그 데이터를 생성합니다.
+	 *
+	 * @param request 요청을 감싼 {@link WrappedHttpServletRequest} 객체
+	 * @param traceId 요청을 추적하기 위한 고유한 트레이스 ID
+	 * @return 요청 로그 데이터 맵
+	 */
 	private Map<String, Object> buildRequestLogData(WrappedHttpServletRequest request, String traceId) {
 		Map<String, Object> logData = new HashMap<>();
 		logData.put("traceId", traceId);
@@ -110,6 +143,13 @@ public class LogFilter extends OncePerRequestFilter {
 		return logData;
 	}
 
+	/**
+	 * 응답 로그 데이터를 생성합니다.
+	 *
+	 * @param response 응답을 감싼 {@link WrappedHttpServletResponse} 객체
+	 * @param traceId 요청을 추적하기 위한 고유한 트레이스 ID
+	 * @return 응답 로그 데이터 맵
+	 */
 	private Map<String, Object> buildResponseLogData(WrappedHttpServletResponse response, String traceId) {
 		Map<String, Object> logData = new HashMap<>();
 		logData.put("traceId", traceId);
@@ -123,6 +163,11 @@ public class LogFilter extends OncePerRequestFilter {
 		return logData;
 	}
 
+	/**
+	 * 로그 데이터를 비동기로 전송합니다.
+	 *
+	 * @param logData 전송할 로그 데이터 맵
+	 */
 	private void sendLogAsync(Map<String, Object> logData) {
 		CompletableFuture.runAsync(() -> {
 			try {
@@ -135,6 +180,12 @@ public class LogFilter extends OncePerRequestFilter {
 		});
 	}
 
+	/**
+	 * 요청 또는 응답의 헤더를 맵으로 변환합니다.
+	 *
+	 * @param requestOrResponse 요청 또는 응답 객체
+	 * @return 헤더 이름과 값이 담긴 맵
+	 */
 	private Map<String, String> getHeadersMap(Object requestOrResponse) {
 		if (requestOrResponse instanceof WrappedHttpServletRequest wrappedRequest) {
 			return Collections.list(wrappedRequest.getHeaderNames()).stream()
@@ -154,6 +205,12 @@ public class LogFilter extends OncePerRequestFilter {
 		return new HashMap<>();
 	}
 
+	/**
+	 * 요청 또는 응답 본문을 잘라내고 민감한 데이터를 마스킹합니다.
+	 *
+	 * @param body 요청 또는 응답 본문
+	 * @return 잘라내고 마스킹 처리된 본문
+	 */
 	private String truncateAndMaskBody(String body) {
 		if (body == null) {
 			return "[No Content]";
@@ -166,6 +223,12 @@ public class LogFilter extends OncePerRequestFilter {
 		return maskSensitiveData(truncatedBody);
 	}
 
+	/**
+	 * 요청 또는 응답 본문에서 민감한 데이터를 마스킹합니다.
+	 *
+	 * @param body 요청 또는 응답 본문
+	 * @return 민감한 데이터가 마스킹된 본문
+	 */
 	private String maskSensitiveData(String body) {
 		for (String field : logProperties.getSensitiveFields()) {
 			body = body.replaceAll(String.format("\"%s\":\"[^\"]*\"", field),

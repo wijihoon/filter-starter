@@ -61,10 +61,132 @@ XSS 필터는 HTTP 요청의 다음 요소들을 검사합니다:
 ```yaml
 filter:
   xss:
-    enabled: ${XSS_FILTER_ENABLED:true} # 환경 변수로 동적 설정 가능
+    enabled: true
     patterns:
-      - "<iframe.*?>.*?</iframe>"
-      - "<object.*?>.*?</object>"
-      - "<embed.*?>"
+      - "<iframe.*?>.*?</iframe>"          # iframe 태그
+      - "<object.*?>.*?</object>"          # object 태그
+      - "<embed.*?>"                       # embed 태그
+      - "<script.*?>.*?</script>"          # script 태그
+      - "<.*?javascript:.*?>"              # javascript 프로토콜
+      - "<.*?vbscript:.*?>"                # vbscript 프로토콜
+      - "<.*?data:.*?>"                    # data URIs
+      - "<.*?expression\\(.*?>"            # expressions
+      - "<.*?onload\\s*=.*?>"              # onload 이벤트 핸들러
+      - "<.*?onclick\\s*=.*?>"             # onclick 이벤트 핸들러
+      - "<.*?onerror\\s*=.*?>"             # onerror 이벤트 핸들러
+      - "<.*?onmouseover\\s*=.*?>"         # onmouseover 이벤트 핸들러
+      - "<.*?onfocus\\s*=.*?>"             # onfocus 이벤트 핸들러
+      - "<.*?onchange\\s*=.*?>"            # onchange 이벤트 핸들러
+      - "<.*?oninput\\s*=.*?>"             # oninput 이벤트 핸들러
+      - "<.*?onabort\\s*=.*?>"             # onabort 이벤트 핸들러
+      - "<.*?onbeforeunload\\s*=.*?>"      # onbeforeunload 이벤트 핸들러
+      - "<.*?src\\s*=.*?>"                 # src 속성
+      - "<.*?href\\s*=.*?>"                # href 속성
+      - "<.*?background\\s*=.*?>"          # background 속성
+      - "<style.*?>.*?</style>"            # style 태그
+      - "<form.*?>.*?</form>"              # form 태그
+      - "<.*?data-.*?>"                    # data 속성
+```
 
+```properties
+# XSS 필터 활성화 여부 설정
+filter.xss.enabled=true
+
+# XSS 공격을 탐지할 패턴 리스트 설정
+filter.xss.patterns[0]=<iframe.*?>.*?</iframe>  # iframe 태그
+filter.xss.patterns[1]=<object.*?>.*?</object>  # object 태그
+filter.xss.patterns[2]=<embed.*?>               # embed 태그
+filter.xss.patterns[3]=<script.*?>.*?</script>  # script 태그
+filter.xss.patterns[4]=<.*?javascript:.*?>      # javascript 프로토콜
+filter.xss.patterns[5]=<.*?vbscript:.*?>        # vbscript 프로토콜
+filter.xss.patterns[6]=<.*?data:.*?>            # data URIs
+filter.xss.patterns[7]=<.*?expression\\(.*?>    # expressions
+filter.xss.patterns[8]=<.*?onload\\s*=.*?>      # onload 이벤트 핸들러
+filter.xss.patterns[9]=<.*?onclick\\s*=.*?>     # onclick 이벤트 핸들러
+filter.xss.patterns[10]=<.*?onerror\\s*=.*?>    # onerror 이벤트 핸들러
+filter.xss.patterns[11]=<.*?onmouseover\\s*=.*?># onmouseover 이벤트 핸들러
+filter.xss.patterns[12]=<.*?onfocus\\s*=.*?>    # onfocus 이벤트 핸들러
+filter.xss.patterns[13]=<.*?onchange\\s*=.*?>   # onchange 이벤트 핸들러
+filter.xss.patterns[14]=<.*?oninput\\s*=.*?>    # oninput 이벤트 핸들러
+filter.xss.patterns[15]=<.*?onabort\\s*=.*?>    # onabort 이벤트 핸들러
+filter.xss.patterns[16]=<.*?onbeforeunload\\s*=.*?> # onbeforeunload 이벤트 핸들러
+filter.xss.patterns[17]=<.*?src\\s*=.*?>         # src 속성
+filter.xss.patterns[18]=<.*?href\\s*=.*?>        # href 속성
+filter.xss.patterns[19]=<.*?background\\s*=.*?>  # background 속성
+filter.xss.patterns[20]=<style.*?>.*?</style>    # style 태그
+filter.xss.patterns[21]=<form.*?>.*?</form>      # form 태그
+filter.xss.patterns[22]=<.*?data-.*?>            # data 속성
+```
+
+## 요청 / 응답 예시
+
+XSS 공격이 포함된 요청과 응답 예시 요청:
+
+```http
+POST /api/user/register HTTP/1.1
+Host: example.com
+Content-Type: application/json
+
+{
+    "username": "attacker",
+    "email": "attacker@example.com",
+    "comment": "<script>alert('XSS Attack!');</script>"
+}
+```
+
+응답:
+
+```http
+HTTP/1.1 403 Forbidden
+Content-Type: application/json
+
+{
+    "success": false,
+    "message": "XSS detected in request body",
+    "data": null,
+    "status": "FORBIDDEN"
+}
+```
+
+XSS 공격이 포함된 URL 파라미터 요청과 응답 예시 요청:
+
+```http
+GET /api/search?query=<script>alert('XSS');</script> HTTP/1.1
+Host: example.com
+```
+
+응답:
+
+```http
+HTTP/1.1 403 Forbidden
+Content-Type: application/json
+
+{
+    "success": false,
+    "message": "XSS detected in request parameter",
+    "data": null,
+    "status": "FORBIDDEN"
+}
+```
+
+XSS 공격이 포함된 쿠키 요청과 응답 예시 요청:
+
+```http
+GET /api/user/profile HTTP/1.1
+Host: example.com
+Cookie: sessionId=<script>alert('XSS');</script>
+```
+
+응답:
+
+```http
+HTTP/1.1 403 Forbidden
+Content-Type: application/json
+
+{
+    "success": false,
+    "message": "XSS detected in cookie",
+    "data": null,
+    "status": "FORBIDDEN"
+}
 ```

@@ -72,6 +72,7 @@ dependencies {
 ```yaml
 filter:
   cors:
+    enabled: false
     allowedOrigins:
       - "http://example.com"
       - "http://another-domain.com"
@@ -87,6 +88,8 @@ filter:
 ```
 
 ```properties
+# 필터 활성화
+filter.cors.enabled=false
 # 허용할 출처 목록
 filter.cors.allowedOrigins=http://example.com,http://another-domain.com
 # 허용할 HTTP 메서드 목록
@@ -103,3 +106,71 @@ filter.cors.allowCredentials=true
 - **allowedMethods**: 허용할 HTTP 메서드 목록
 - **allowedHeaders**: 허용할 HTTP 헤더 목록
 - **allowCredentials**: 자격 증명(쿠키 등)을 포함한 요청 허용 여부
+
+## 요청 / 응답 예시
+
+### 1. 출처 (Origin) 정책 위반
+
+#### 요청 예시
+
+- **출처 (Origin)**: `https://unauthorized-origin.com`
+- **HTTP 메서드**: `GET`
+- **헤더**: `Content-Type: application/json`
+
+#### 응답 예시
+
+- **상태 코드**: `403 Forbidden`
+- **응답 바디**:
+
+    ```json
+    {
+        "success": false,
+        "message": "CORS 출처 정책 위반",
+        "data": null,
+        "status": 403
+    }
+    ```
+
+### 2. 메서드 (Method) 정책 위반
+
+#### 요청 예시
+
+- **출처 (Origin)**: `https://example.com`
+- **HTTP 메서드**: `DELETE` (허용되지 않은 메서드)
+- **헤더**: `Content-Type: application/json`
+
+#### 응답 예시
+
+- **상태 코드**: `403 Forbidden`
+- **응답 바디**:
+
+    ```json
+    {
+        "success": false,
+        "message": "CORS 메서드 정책 위반",
+        "data": null,
+        "status": 403
+    }
+    ```
+
+### 3. 헤더 (Headers) 정책 위반
+
+#### 요청 예시
+
+- **출처 (Origin)**: `https://example.com`
+- **HTTP 메서드**: `GET`
+- **헤더**: `Content-Type: application/xml` (허용되지 않는 헤더)
+
+#### 응답 예시
+
+- **상태 코드**: `403 Forbidden`
+- **응답 바디**:
+
+    ```json
+    {
+        "success": false,
+        "message": "CORS 헤더 정책 위반",
+        "data": null,
+        "status": 403
+    }
+    ```
