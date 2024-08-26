@@ -1,4 +1,4 @@
-# CSRF Module
+z# CSRF Module
 
 `csrf-module`은 Spring Boot 애플리케이션에서 CSRF(Cross-Site Request Forgery) 공격을 방지하기 위한 필터 및 설정을 제공하는 모듈입니다. 이 모듈은 보안 관련 HTTP
 헤더를 응답에 추가하여 CSRF 공격으로부터 보호합니다.
@@ -16,13 +16,13 @@
 
 ```groovy
 dependencies {
-    implementation 'com.example:csrf-module:1.0.0'
+    implementation 'ent.genesisframework:csrf-module:1.0.0'
 }
 ```
 
 ```Maven
 <dependency>
-    <groupId>com.example</groupId>
+    <groupId>ent.genesisframework</groupId>
     <artifactId>csrf-module</artifactId>
     <version>1.0.0</version>
 </dependency> 

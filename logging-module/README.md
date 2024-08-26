@@ -17,13 +17,13 @@
 
 ```groovy
 dependencies {
-    implementation 'com.example:logging-module:1.0.0'
+    implementation 'ent.genesisframework:logging-module:1.0.0'
 }
 ```
 
 ```Maven
 <dependency>
-    <groupId>com.example</groupId>
+    <groupId>ent.genesisframework</groupId>
     <artifactId>logging-module</artifactId>
     <version>1.0.0</version>
 </dependency>   
