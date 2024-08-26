@@ -3,14 +3,7 @@ plugins {
     id("maven-publish")
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
-}
-
 dependencies {
-    // 필요한 의존성을 추가합니다.
-    // 예: implementation("org.springframework.boot:spring-boot-starter")
 }
 
 tasks.withType<Jar> {

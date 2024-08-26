@@ -3,15 +3,10 @@ plugins {
     id("maven-publish")
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
-}
-
 dependencies {
     implementation("org.springframework.kafka:spring-kafka") // Kafka starter
     implementation("org.springframework.boot:spring-boot-starter-webflux") // WebFlux starter
-    implementation("org.springframework.boot:spring-boot-starter-validation") // Validation starter
+    implementation("org.springframework.boot:spring-boot-starter-validation") // Validation을 위한 의존성
 
     implementation(project(":common-module"))
 }

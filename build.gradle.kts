@@ -10,35 +10,33 @@ allprojects {
         maven("https://repo.spring.io/milestone")
         maven("https://repo.spring.io/snapshot")
     }
-
-    // 버전 관리를 위한 공통 변수
-    ext {
-        set("lombokVersion", "1.18.24")
-        set("javaVersion", "21")
-    }
 }
 
 subprojects {
-    apply(plugin = "java")
-    apply(plugin = "org.springframework.boot")
-    apply(plugin = "io.spring.dependency-management")
+    apply(plugin = "java") // 각 서브프로젝트에 java 플러그인 적용
+    apply(plugin = "org.springframework.boot") // 각 서브프로젝트에 java 플러그인 적용
+    apply(plugin = "io.spring.dependency-management") // 각 서브프로젝트에 java 플러그인 적용
 
     group = "ent.genesisframework"
     version = "1.0.0"
 
-    java {
-        toolchain {
-            languageVersion.set(JavaLanguageVersion.of(21))
-        }
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+    repositories {
+        mavenCentral()
+        maven("https://repo.spring.io/milestone")
+        maven("https://repo.spring.io/snapshot")
     }
 
     dependencies {
         implementation("org.springframework.boot:spring-boot-starter-web")
 
         // Lombok 라이브러리
-        compileOnly("org.projectlombok:lombok:${project.ext["lombokVersion"]}")
-        annotationProcessor("org.projectlombok:lombok:${project.ext["lombokVersion"]}")
+        implementation("org.projectlombok:lombok") // Lombok 라이브러리
+        annotationProcessor("org.projectlombok:lombok") // Lombok annotation processor
+    }
+
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(21))
+        }
     }
 }

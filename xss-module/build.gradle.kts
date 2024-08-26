@@ -3,16 +3,11 @@ plugins {
     id("maven-publish")
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
-}
-
 dependencies {
     implementation(project(":common-module"))
 }
 
-tasks.jar {
+tasks.withType<Jar> {
     manifest {
         attributes["Implementation-Title"] = "XSS Module"
         attributes["Implementation-Version"] = version
