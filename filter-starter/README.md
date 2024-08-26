@@ -90,17 +90,13 @@ dependencies {
 # CORS 설정 예제
 cors.allowedOrigins=http://example.com
 cors.allowedMethods=GET,POST,PUT,DELETE
-
 # 로그 설정 예제
 log.logDestination=kafka
 log.sensitiveFields=password,cardNumber
-
 # CSRF 설정 예제
 csrf.enabled=true
-
 # XSS 설정 예제
 xss.enabled=true
-
 # SQL 인젝션 설정 예제
 sqlInjection.enabled=true
 ```
