@@ -1,11 +1,12 @@
 package shinhancard.logging.properties;
 
-import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.annotation.Validated;
+
+import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Loki 설정을 담고 있는 객체입니다.
@@ -21,16 +22,16 @@ import org.springframework.validation.annotation.Validated;
 @Setter
 public class LokiProperties {
 
-    /**
-     * Loki 서버의 URL.
-     * <p>
-     * 이 속성은 필수로 설정되어야 하며, null이 될 수 없습니다.
-     * </p>
-     */
-    @NotNull(message = "Loki URL은 null일 수 없습니다.")
-    private String url;
+	/**
+	 * Loki 서버의 URL.
+	 * <p>
+	 * 이 속성은 필수로 설정되어야 하며, null이 될 수 없습니다.
+	 * </p>
+	 */
+	@NotNull(message = "Loki URL은 null일 수 없습니다.")
+	private String url;
 
-    // 기타 Loki 관련 설정이 필요한 경우, 여기에서 추가합니다.
-    // 예: 인증 정보, 기본 레벨 등
+	// 기타 Loki 관련 설정이 필요한 경우, 여기에서 추가합니다.
+	// 예: 인증 정보, 기본 레벨 등
 
 }

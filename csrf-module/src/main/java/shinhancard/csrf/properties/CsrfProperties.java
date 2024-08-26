@@ -1,9 +1,10 @@
 package shinhancard.csrf.properties;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 보안 헤더 설정을 위한 프로퍼티 클래스입니다.
@@ -19,27 +20,27 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 public class CsrfProperties {
 
-    /**
-     * X-Frame-Options 헤더의 설정값입니다.
-     * <p>
-     * 이 헤더는 클릭재킹 공격을 방지하는 데 사용됩니다. 기본값은 "DENY"입니다.
-     * </p>
-     */
-    private String xFrameOptions = "DENY";
+	/**
+	 * X-Frame-Options 헤더의 설정값입니다.
+	 * <p>
+	 * 이 헤더는 클릭재킹 공격을 방지하는 데 사용됩니다. 기본값은 "DENY"입니다.
+	 * </p>
+	 */
+	private String xFrameOptions = "DENY";
 
-    /**
-     * X-XSS-Protection 헤더의 설정값입니다.
-     * <p>
-     * 이 헤더는 브라우저에서 XSS 공격을 방지하는 데 사용됩니다. 기본값은 "1; mode=block"입니다.
-     * </p>
-     */
-    private String xXssProtection = "1; mode=block";
+	/**
+	 * X-XSS-Protection 헤더의 설정값입니다.
+	 * <p>
+	 * 이 헤더는 브라우저에서 XSS 공격을 방지하는 데 사용됩니다. 기본값은 "1; mode=block"입니다.
+	 * </p>
+	 */
+	private String xXssProtection = "1; mode=block";
 
-    /**
-     * X-Content-Type-Options 헤더의 설정값입니다.
-     * <p>
-     * 이 헤더는 MIME 스니핑 공격을 방지하는 데 사용됩니다. 기본값은 "nosniff"입니다.
-     * </p>
-     */
-    private String xContentTypeOptions = "nosniff";
+	/**
+	 * X-Content-Type-Options 헤더의 설정값입니다.
+	 * <p>
+	 * 이 헤더는 MIME 스니핑 공격을 방지하는 데 사용됩니다. 기본값은 "nosniff"입니다.
+	 * </p>
+	 */
+	private String xContentTypeOptions = "nosniff";
 }
