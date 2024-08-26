@@ -15,11 +15,11 @@
 
 ```groovy
 dependencies {
-    implementation 'com.example:xss-module-starter:1.0.0'
+    implementation 'ent.genesisframework:xss-module-starter:1.0.0'
 }
 ```
 
-위의 com.example:xss-module-starter:1.0.0 부분을 실제 모듈의 그룹 ID와 버전으로 교체하세요.
+위의 ent.genesisframework:xss-module-starter:1.0.0 부분을 실제 모듈의 그룹 ID와 버전으로 교체하세요.
 
 ## 설정 방법
 
@@ -91,7 +91,6 @@ filter:
 ```properties
 # XSS 필터 활성화 여부 설정
 filter.xss.enabled=true
-
 # XSS 공격을 탐지할 패턴 리스트 설정
 filter.xss.patterns[0]=<iframe.*?>.*?</iframe>  # iframe 태그
 filter.xss.patterns[1]=<object.*?>.*?</object>  # object 태그

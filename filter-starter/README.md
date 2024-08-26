@@ -70,13 +70,13 @@
 
 ```groovy
 dependencies {
-    implementation 'com.example:filter-starter:1.0.0'
+    implementation 'ent.genesisframework:filter-starter:1.0.0'
 }
 ```
 
 ```maven
 <dependency>
-    <groupId>com.example</groupId>
+    <groupId>ent.genesisframework</groupId>
     <artifactId>filter-starter</artifactId>
     <version>1.0.0</version>
 </dependency>
@@ -87,42 +87,144 @@ dependencies {
 다음은 application.properties 또는 application.yml 파일에서 필터를 활성화하거나 설정하는 예제입니다:
 
 ```properties
-# CORS 설정 예제
-cors.allowedOrigins=http://example.com
-cors.allowedMethods=GET,POST,PUT,DELETE
-# 로그 설정 예제
-log.logDestination=kafka
-log.sensitiveFields=password,cardNumber
-# CSRF 설정 예제
-csrf.enabled=true
-# XSS 설정 예제
-xss.enabled=true
-# SQL 인젝션 설정 예제
-sqlInjection.enabled=true
+# 로그 모듈 설정
+filter.log.enabled=true
+filter.log.requestBody.truncate=true
+filter.log.responseBody.truncate=true
+filter.log.body.maxSize=2048
+filter.log.logDestination=loki
+filter.log.sensitiveFields[0]=password
+filter.log.sensitiveFields[1]=cardNumber
+filter.log.sensitiveFields[2]=ssn
+# XSS 보호 모듈 설정
+filter.xss.enabled=true
+filter.xss.patterns[0]=<iframe.*?>.*?</iframe>          # iframe 태그
+filter.xss.patterns[1]=<object.*?>.*?</object>          # object 태그
+filter.xss.patterns[2]=<embed.*?>                       # embed 태그
+filter.xss.patterns[3]=<script.*?>.*?</script>          # script 태그
+filter.xss.patterns[4]=<.*?javascript:.*?>              # javascript 프로토콜
+filter.xss.patterns[5]=<.*?vbscript:.*?>                # vbscript 프로토콜
+filter.xss.patterns[6]=<.*?data:.*?>                    # data URIs
+filter.xss.patterns[7]=<.*?expression\\(.*?>            # expressions
+filter.xss.patterns[8]=<.*?onload\\s*=.*?>              # onload 이벤트 핸들러
+filter.xss.patterns[9]=<.*?onclick\\s*=.*?>             # onclick 이벤트 핸들러
+filter.xss.patterns[10]=<.*?onerror\\s*=.*?>            # onerror 이벤트 핸들러
+filter.xss.patterns[11]=<.*?onmouseover\\s*=.*?>         # onmouseover 이벤트 핸들러
+filter.xss.patterns[12]=<.*?onfocus\\s*=.*?>            # onfocus 이벤트 핸들러
+filter.xss.patterns[13]=<.*?onchange\\s*=.*?>           # onchange 이벤트 핸들러
+filter.xss.patterns[14]=<.*?oninput\\s*=.*?>            # oninput 이벤트 핸들러
+filter.xss.patterns[15]=<.*?onabort\\s*=.*?>            # onabort 이벤트 핸들러
+filter.xss.patterns[16]=<.*?onbeforeunload\\s*=.*?>      # onbeforeunload 이벤트 핸들러
+filter.xss.patterns[17]=<.*?src\\s*=.*?>                 # src 속성
+filter.xss.patterns[18]=<.*?href\\s*=.*?>                # href 속성
+filter.xss.patterns[19]=<.*?background\\s*=.*?>          # background 속성
+filter.xss.patterns[20]=<style.*?>.*?</style>            # style 태그
+filter.xss.patterns[21]=<form.*?>.*?</form>              # form 태그
+filter.xss.patterns[22]=<.*?data-.*?>                    # data 속성
+# CORS 설정
+filter.cors.enabled=false
+filter.cors.allowedOrigins[0]=http://example.com
+filter.cors.allowedOrigins[1]=http://another-domain.com
+filter.cors.allowedMethods[0]=GET
+filter.cors.allowedMethods[1]=POST
+filter.cors.allowedMethods[2]=PUT
+filter.cors.allowedMethods[3]=DELETE
+filter.cors.allowedHeaders[0]=Authorization
+filter.cors.allowedHeaders[1]=Content-Type
+filter.cors.allowCredentials=true
+# CSRF 설정
+filter.csrf.enabled=true
+filter.csrf.headers.xFrameOptions=DENY
+filter.csrf.headers.xXssProtection=1; mode=block
+filter.csrf.headers.xContentTypeOptions=nosniff
+# SQL 인젝션 필터 설정
+filter.sql.enabled=true
+filter.sql.patterns[0]=.*([';]+|(--)).* # SQL 주석 및 SQL 주입
+filter.sql.patterns[1]=.*union.*select.* # UNION SELECT
+filter.sql.patterns[2]=.*select.*from.* # SELECT FROM
+filter.sql.patterns[3]=.*insert.*into.* # INSERT INTO
+filter.sql.patterns[4]=.*update.*set.* # UPDATE SET
+filter.sql.patterns[5]=.*delete.*from.* # DELETE FROM
+
 ```
 
 ```yaml
-cors:
-  allowedOrigins:
-    - http://example.com
-  allowedMethods:
-    - GET
-    - POST
-    - PUT
-    - DELETE
+filter:
+  log:
+    enabled: true
+    # 요청 본문을 잘라낼지 여부
+    requestBody:
+      truncate: true
 
-log:
-  logDestination: kafka
-  sensitiveFields:
-    - password
-    - cardNumber
+    # 응답 본문을 잘라낼지 여부
+    responseBody:
+      truncate: true
 
-csrf:
-  enabled: true
+    # 로그 본문의 최대 크기 (바이트 단위)
+    body:
+      maxSize: 2048
 
-xss:
-  enabled: true
+    # 로그 전송 방식 (kafka 또는 loki)
+    logDestination: loki
 
-sqlInjection:
-  enabled: true
+    # 마스킹할 민감 정보 필드 목록
+    sensitiveFields:
+      - password
+      - cardNumber
+      - ssn
+  xss:
+    enabled: true
+    patterns:
+      - "<iframe.*?>.*?</iframe>"          # iframe 태그
+      - "<object.*?>.*?</object>"          # object 태그
+      - "<embed.*?>"                       # embed 태그
+      - "<script.*?>.*?</script>"          # script 태그
+      - "<.*?javascript:.*?>"              # javascript 프로토콜
+      - "<.*?vbscript:.*?>"                # vbscript 프로토콜
+      - "<.*?data:.*?>"                    # data URIs
+      - "<.*?expression\\(.*?>"            # expressions
+      - "<.*?onload\\s*=.*?>"              # onload 이벤트 핸들러
+      - "<.*?onclick\\s*=.*?>"             # onclick 이벤트 핸들러
+      - "<.*?onerror\\s*=.*?>"             # onerror 이벤트 핸들러
+      - "<.*?onmouseover\\s*=.*?>"         # onmouseover 이벤트 핸들러
+      - "<.*?onfocus\\s*=.*?>"             # onfocus 이벤트 핸들러
+      - "<.*?onchange\\s*=.*?>"            # onchange 이벤트 핸들러
+      - "<.*?oninput\\s*=.*?>"             # oninput 이벤트 핸들러
+      - "<.*?onabort\\s*=.*?>"             # onabort 이벤트 핸들러
+      - "<.*?onbeforeunload\\s*=.*?>"      # onbeforeunload 이벤트 핸들러
+      - "<.*?src\\s*=.*?>"                 # src 속성
+      - "<.*?href\\s*=.*?>"                # href 속성
+      - "<.*?background\\s*=.*?>"          # background 속성
+      - "<style.*?>.*?</style>"            # style 태그
+      - "<form.*?>.*?</form>"              # form 태그
+      - "<.*?data-.*?>"                    # data 속성
+  cors:
+    enabled: false
+    allowedOrigins:
+      - "http://example.com"
+      - "http://another-domain.com"
+    allowedMethods:
+      - "GET"
+      - "POST"
+      - "PUT"
+      - "DELETE"
+    allowedHeaders:
+      - "Authorization"
+      - "Content-Type"
+    allowCredentials: true
+  csrf:
+    enabled: true
+    headers:
+      xFrameOptions: DENY
+      xXssProtection: 1; mode=block
+      xContentTypeOptions: nosniff
+  sql:
+    enabled: true
+    patterns:
+      - ".*([';]+|(--)).*" # SQL 주석 및 SQL 주입
+      - ".*union.*select.*" # UNION SELECT
+      - ".*select.*from.*" # SELECT FROM
+      - ".*insert.*into.*" # INSERT INTO
+      - ".*update.*set.*" # UPDATE SET
+      - ".*delete.*from.*" # DELETE FROM
 ```

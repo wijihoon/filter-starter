@@ -16,13 +16,13 @@
 
 ```groovy
 dependencies {
-    implementation 'com.example:cors-module:1.0.0'
+    implementation 'ent.genesisframework:cors-module:1.0.0'
 }
 ```
 
 ```Maven
 <dependency>
-    <groupId>com.example</groupId>
+    <groupId>ent.genesisframework</groupId>
     <artifactId>cors-module</artifactId>
     <version>1.0.0</version>
 </dependency>
