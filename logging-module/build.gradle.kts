@@ -20,7 +20,7 @@ tasks.withType<Jar> {
     manifest {
         attributes["Implementation-Title"] = "Logging Module"
         attributes["Implementation-Version"] = version
-        attributes["Implementation-Vendor"] = "Your Company" // 발행자 정보 추가
+        attributes["Implementation-Vendor"] = "Shinhancard" // 발행자 정보 추가
     }
 }
 
@@ -36,22 +36,25 @@ publishing {
             pom {
                 name.set("Logging Module")
                 description.set("Logging module for handling logs.")
-                url.set("http://www.example.com")
+                url.set("https://gitlab.shinhancard.com/genensis/genesis-autoconfigure")
                 licenses {
                     license {
-                        name.set("The Apache License, Version 2.0")
-                        url.set("http://www.apache.org/licenses/LICENSE-2.0")
+                        name.set("MIT License")
+                        url.set("opensource.org/licenses/mit/")
                     }
                 }
                 developers {
                     developer {
-                        id.set("developerId")
-                        name.set("Developer Name")
-                        email.set("developer@example.com")
+                        id.set("@203933")
+                        name.set("Shinhancard Genesis")
+                        email.set("wjh@shinhan.com")
                     }
                 }
                 scm {
-                    url.set("http://www.example.com/scm")
+                    url.set("https://gitlab.shinhancard.com/genensis/genesis-autoconfigure/scm")
+                    connection.set("scm:git:https://gitlab.shinhancard.com/genensis/genesis-autoconfigure.git")
+                    developerConnection.set("scm:git:https://gitlab.shinhancard.com/genensis/genesis-autoconfigure.git")
+                    tag.set("v1.0.0")
                 }
             }
         }

@@ -9,7 +9,7 @@ java {
 }
 
 dependencies {
-    // 공통 모듈에서 필요한 의존성을 여기에 추가합니다.
+    // 필요한 의존성을 추가합니다.
     // 예: implementation("org.springframework.boot:spring-boot-starter")
 }
 
@@ -17,7 +17,7 @@ tasks.withType<Jar> {
     manifest {
         attributes["Implementation-Title"] = "Common Module"
         attributes["Implementation-Version"] = version
-        attributes["Implementation-Vendor"] = "Your Company"
+        attributes["Implementation-Vendor"] = "Shinhancard"
     }
 }
 
@@ -33,22 +33,25 @@ publishing {
             pom {
                 name.set("Common Module")
                 description.set("Common module for shared functionality.")
-                url.set("http://www.example.com")
+                url.set("https://gitlab.shinhancard.com/genensis/genesis-autoconfigure")
                 licenses {
                     license {
-                        name.set("The Apache License, Version 2.0")
-                        url.set("http://www.apache.org/licenses/LICENSE-2.0")
+                        name.set("MIT License")
+                        url.set("https://opensource.org/licenses/mit/")
                     }
                 }
                 developers {
                     developer {
-                        id.set("developerId")
-                        name.set("Developer Name")
-                        email.set("developer@example.com")
+                        id.set("203933") // 실제 ID로 변경
+                        name.set("Shinhancard Genesis")
+                        email.set("wjh@shinhan.com")
                     }
                 }
                 scm {
-                    url.set("http://www.example.com/scm")
+                    url.set("https://gitlab.shinhancard.com/genensis/genesis-autoconfigure/scm")
+                    connection.set("scm:git:https://gitlab.shinhancard.com/genensis/genesis-autoconfigure.git")
+                    developerConnection.set("scm:git:https://gitlab.shinhancard.com/genensis/genesis-autoconfigure.git")
+                    tag.set("v1.0.0")
                 }
             }
         }
