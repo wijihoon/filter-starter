@@ -1,10 +1,10 @@
 package shinhancard.sql.config;
 
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 
 import shinhancard.sql.filter.SQLInjectionFilter;
@@ -16,8 +16,8 @@ import shinhancard.sql.properties.SQLInjectionProperties;
  * 이 클래스는 SQL 인젝션 필터를 자동으로 등록합니다.
  * </p>
  */
-@Configuration
-@EnableConfigurationProperties(SQLInjectionProperties.class)
+@AutoConfiguration
+@EnableConfigurationProperties({SQLInjectionProperties.class})
 @ConditionalOnProperty(name = "filter.sql.enabled", havingValue = "true", matchIfMissing = true)
 public class SQLInjectionAutoConfiguration {
 

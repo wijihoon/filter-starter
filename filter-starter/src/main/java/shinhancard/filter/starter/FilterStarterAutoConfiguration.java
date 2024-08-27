@@ -1,7 +1,6 @@
 package shinhancard.filter.starter;
 
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.context.annotation.Configuration;
 
 import shinhancard.cors.config.CorsAutoConfiguration;
 import shinhancard.csrf.config.CsrfAutoConfiguration;
@@ -16,7 +15,6 @@ import shinhancard.xss.config.XSSAutoConfiguration;
  * 등록된 필터들은 조건에 따라 동적으로 활성화되며, 외부 설정에 따라 동작을 조절할 수 있습니다.
  * </p>
  */
-@Configuration
 @AutoConfigureAfter({
 	CorsAutoConfiguration.class,
 	LogAutoConfiguration.class,

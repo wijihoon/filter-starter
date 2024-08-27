@@ -36,21 +36,17 @@ dependencies {
 # CSRF 필터 활성화
 filter.csrf.enabled=true
 # X-Frame-Options 헤더의 값
-csrf.headers.xFrameOptions=DENY
+filter.csrf.xFrameOptions=DENY
 # X-XSS-Protection 헤더의 값
-csrf.headers.xXssProtection=1; mode=block
+filter.csrf.xXssProtection=1; mode=block
 # X-Content-Type-Options 헤더의 값
-csrf.headers.xContentTypeOptions=nosniff
-
+filter.csrf.xContentTypeOptions=nosniff
 ```
 
 ```yaml
 filter:
   csrf:
     enabled: true
-
-csrf:
-  headers:
     xFrameOptions: DENY
     xXssProtection: 1; mode=block
     xContentTypeOptions: nosniff

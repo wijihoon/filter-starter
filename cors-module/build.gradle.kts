@@ -15,6 +15,15 @@ tasks.withType<Jar> {
     }
 }
 
+configurations {
+    compileOnly {
+        extendsFrom(configurations.annotationProcessor.get())
+    }
+    named("runtimeElements") {
+        extendsFrom(configurations.runtimeOnly.get())
+    }
+}
+
 publishing {
     publications {
         create<MavenPublication>("mavenJava") {

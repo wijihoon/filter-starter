@@ -1,10 +1,10 @@
 package shinhancard.cors.config;
 
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -19,8 +19,8 @@ import shinhancard.cors.properties.CorsProperties;
  * 이 클래스는 CORS 설정을 자동으로 등록하여 CORS 요청을 처리할 수 있도록 구성합니다.
  * </p>
  */
-@Configuration
-@EnableConfigurationProperties(CorsProperties.class)
+@AutoConfiguration
+@EnableConfigurationProperties({CorsProperties.class})
 @ConditionalOnProperty(name = "filter.cors.enabled", havingValue = "true", matchIfMissing = true)
 public class CorsAutoConfiguration {
 

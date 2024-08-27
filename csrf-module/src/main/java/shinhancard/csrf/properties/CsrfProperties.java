@@ -19,7 +19,7 @@ import lombok.Setter;
  * </p>
  */
 @Configuration
-@ConfigurationProperties(prefix = "csrf.headers")
+@ConfigurationProperties(prefix = "csrf")
 @Getter
 @Setter
 public class CsrfProperties {

@@ -1,10 +1,10 @@
 package shinhancard.xss.config;
 
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 
 import shinhancard.xss.filter.XSSFilter;
@@ -16,8 +16,8 @@ import shinhancard.xss.properties.XSSProperties;
  * 이 클래스는 XSS 필터를 자동으로 등록합니다.
  * </p>
  */
-@Configuration
-@EnableConfigurationProperties(XSSProperties.class)
+@AutoConfiguration
+@EnableConfigurationProperties({XSSProperties.class})
 @ConditionalOnProperty(name = "filter.xss.enabled", havingValue = "true", matchIfMissing = true)
 public class XSSAutoConfiguration {
 

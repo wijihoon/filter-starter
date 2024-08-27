@@ -18,7 +18,7 @@ subprojects {
     apply(plugin = "io.spring.dependency-management") // 각 서브프로젝트에 java 플러그인 적용
 
     group = "ent.genesisframework"
-    version = "1.0.0"
+    version = "1.0.7"
 
     repositories {
         mavenCentral()

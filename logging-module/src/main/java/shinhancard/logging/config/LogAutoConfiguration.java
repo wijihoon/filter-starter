@@ -1,10 +1,10 @@
 package shinhancard.logging.config;
 
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 
 import shinhancard.logging.filter.LogFilter;
@@ -21,7 +21,7 @@ import shinhancard.logging.service.impl.LokiService;
  * 이 클래스는 로그 필터를 자동으로 등록하며, 로그 전송 서비스를 설정합니다.
  * </p>
  */
-@Configuration
+@AutoConfiguration
 @EnableConfigurationProperties({LogProperties.class, KafkaProperties.class, LokiProperties.class})
 @ConditionalOnProperty(name = "filter.log.enabled", havingValue = "true", matchIfMissing = true)
 public class LogAutoConfiguration {

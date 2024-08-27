@@ -1,6 +1,8 @@
 package shinhancard.csrf.config;
 
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +18,8 @@ import shinhancard.csrf.properties.CsrfProperties;
  * {@code filter.csrf.enabled} 속성이 {@code true}로 설정된 경우에만 CSRF 필터가 활성화됩니다.
  * </p>
  */
-@Configuration
+@AutoConfiguration
+@EnableConfigurationProperties({CsrfProperties.class})
 @ConditionalOnProperty(name = "filter.csrf.enabled", havingValue = "true", matchIfMissing = true)
 public class CsrfAutoConfiguration {
 
