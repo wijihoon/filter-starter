@@ -1,8 +1,10 @@
 package shinhancard.common.io;
 
-import org.springframework.http.HttpStatus;
+import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import shinhancard.common.exception.JsonProcessingException;
 
@@ -12,57 +14,59 @@ import shinhancard.common.exception.JsonProcessingException;
  * @param <T> 응답 데이터의 타입
  */
 public record ResponseVo<T>(
-	boolean success, // 요청 성공 여부
-	String message, // 응답 메시지
-	T data, // 응답 데이터
-	HttpStatus status // HTTP 상태 코드
+	DataHeader dataHeader,
+	T dataBody
 ) {
-	private static final ObjectMapper objectMapper = new ObjectMapper();
+	private static final ObjectMapper objectMapper;
+
+	static {
+		objectMapper = new ObjectMapper()
+			.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+			.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+	}
 
 	/**
 	 * 성공 응답을 생성합니다.
-	 * <p>
-	 * 이 메서드는 기본적인 성공 응답을 생성합니다. 응답 데이터가 포함되어 있으며,
-	 * 기본적으로 HTTP 상태 코드는 200 OK로 설정됩니다.
-	 * </p>
 	 *
 	 * @param data 응답 데이터. 성공적인 요청에 대한 데이터를 포함합니다.
-	 * @param <T>  응답 데이터의 타입
+	 * @param responseCode 응답 코드 enum (ResponseCode 사용)
+	 * @param traceId 요청에서 전달된 traceId 또는 새로 생성된 traceId
+	 * @param <T> 응답 데이터의 타입
 	 * @return 성공 응답을 담은 ResponseVo 객체
 	 */
-	public static <T> ResponseVo<T> success(T data) {
-		return new ResponseVo<>(true, "Success", data, HttpStatus.OK);
+	public static <T> ResponseVo<T> success(T data, ResponseCode responseCode, Optional<String> traceId) {
+		DataHeader header = new DataHeader(
+			responseCode.getCode(),
+			responseCode.getMessage(),
+			traceId.orElseGet(ResponseVo::generateTraceId)
+		);
+		return new ResponseVo<>(header, data);
 	}
 
 	/**
-	 * 실패 응답을 생성합니다.
-	 * <p>
-	 * 이 메서드는 실패 응답을 생성합니다. 실패 메시지와 HTTP 상태 코드가 포함됩니다.
-	 * </p>
+	 * 에러 응답을 생성합니다.
 	 *
-	 * @param message 실패 메시지. 요청 처리 중 발생한 오류에 대한 설명입니다.
-	 * @param status  HTTP 상태 코드. 요청 처리 결과에 따른 상태 코드를 설정합니다.
-	 * @param <T>     응답 데이터의 타입. 이 메서드에서는 데이터가 null로 설정됩니다.
+	 * @param responseCode 응답 코드 enum (ResponseCode 사용)
+	 * @param traceId 요청에서 전달된 traceId 또는 새로 생성된 traceId
+	 * @param <T> 응답 데이터의 타입. 이 메서드에서는 데이터가 null로 설정됩니다.
 	 * @return 실패 응답을 담은 ResponseVo 객체
 	 */
-	public static <T> ResponseVo<T> error(String message, HttpStatus status) {
-		return new ResponseVo<>(false, message, null, status);
+	public static <T> ResponseVo<T> error(ResponseCode responseCode, Optional<String> traceId) {
+		DataHeader header = new DataHeader(
+			responseCode.getCode(),
+			responseCode.getMessage(),
+			traceId.orElseGet(ResponseVo::generateTraceId)
+		);
+		return new ResponseVo<>(header, null);
 	}
 
 	/**
-	 * 헤더를 포함한 성공 응답을 생성합니다.
-	 * <p>
-	 * 이 메서드는 기본적인 성공 응답을 생성합니다. 응답 데이터가 포함되어 있으며,
-	 * 기본적으로 HTTP 상태 코드는 200 OK로 설정됩니다. 현재 메서드에서는 헤더 처리 로직이
-	 * 포함되어 있지 않으며, 동일한 응답을 반환합니다.
-	 * </p>
+	 * traceId를 생성합니다. 예시로 간단히 UUID 기반으로 생성합니다.
 	 *
-	 * @param data 응답 데이터. 성공적인 요청에 대한 데이터를 포함합니다.
-	 * @param <T>  응답 데이터의 타입
-	 * @return 성공 응답을 담은 ResponseVo 객체
+	 * @return 생성된 traceId
 	 */
-	public static <T> ResponseVo<T> successWithHeader(T data) {
-		return new ResponseVo<>(true, "Success", data, HttpStatus.OK);
+	private static String generateTraceId() {
+		return java.util.UUID.randomUUID().toString();
 	}
 
 	/**
@@ -75,7 +79,17 @@ public record ResponseVo<T>(
 		try {
 			return objectMapper.writeValueAsString(this);
 		} catch (com.fasterxml.jackson.core.JsonProcessingException e) {
-			throw new JsonProcessingException(ErrorCode.JSON_PROCESSING_ERROR);
+			throw new JsonProcessingException(ResponseCode.JSON_PROCESSING_ERROR);
 		}
+	}
+
+	/**
+	 * 응답의 헤더 정보를 담는 레코드입니다.
+	 */
+	public record DataHeader(
+		String resultCode,
+		String resultMessage,
+		String traceId
+	) {
 	}
 }

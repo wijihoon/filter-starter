@@ -2,6 +2,7 @@ package shinhancard.xss.filter;
 
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import shinhancard.common.io.ErrorCode;
+import shinhancard.common.io.ResponseCode;
 import shinhancard.common.io.ResponseVo;
 import shinhancard.common.wrapper.WrappedHttpServletRequest;
 import shinhancard.xss.properties.XSSProperties;
@@ -202,7 +203,7 @@ public class XSSFilter extends OncePerRequestFilter {
 
 		if (isXssDetected) {
 			logXssDetected(source, value);
-			handleXssViolation(response, getErrorCodeForSource(source));
+			handleXssViolation(response, getResponseCodeForSource(source));
 		}
 
 		return isXssDetected;
@@ -230,17 +231,17 @@ public class XSSFilter extends OncePerRequestFilter {
 	}
 
 	/**
-	 * 출처에 따른 에러 코드를 반환합니다.
+	 * 출처에 따른 응답 코드를 반환합니다.
 	 *
 	 * @param source XSS 공격이 감지된 출처 (예: "parameter", "cookie", "body")
-	 * @return 에러 코드
+	 * @return 응답 코드
 	 */
-	private ErrorCode getErrorCodeForSource(String source) {
+	private ResponseCode getResponseCodeForSource(String source) {
 		return switch (source) {
-			case PARAMETER_SOURCE -> ErrorCode.XSS_IN_PARAMETER;
-			case COOKIE_SOURCE -> ErrorCode.XSS_IN_COOKIE;
-			case BODY_SOURCE -> ErrorCode.XSS_IN_BODY;
-			default -> ErrorCode.XSS_DETECTED;
+			case PARAMETER_SOURCE -> ResponseCode.XSS_IN_PARAMETER;
+			case COOKIE_SOURCE -> ResponseCode.XSS_IN_COOKIE;
+			case BODY_SOURCE -> ResponseCode.XSS_IN_BODY;
+			default -> ResponseCode.XSS_DETECTED;
 		};
 	}
 
@@ -248,15 +249,14 @@ public class XSSFilter extends OncePerRequestFilter {
 	 * XSS 공격이 감지된 경우 에러 응답을 생성합니다.
 	 *
 	 * @param response  HTTP 응답 객체
-	 * @param errorCode 에러 코드
+	 * @param responseCode 응답 코드
 	 * @throws IOException I/O 예외
 	 */
-	private void handleXssViolation(HttpServletResponse response, ErrorCode errorCode) throws IOException {
-		log.error("XSS 예외 발생: {}", errorCode.getMessage());
-		// ErrorCode를 사용하여 에러 응답 생성
+	private void handleXssViolation(HttpServletResponse response, ResponseCode responseCode) throws IOException {
+		log.error("XSS 예외 발생: {}", responseCode.getMessage());
 		response.sendError(
-			errorCode.getHttpStatus().value(),
-			ResponseVo.error(errorCode.getMessage(), errorCode.getHttpStatus()).toString()
+			responseCode.getHttpStatus().value(),
+			ResponseVo.error(responseCode, Optional.empty()).toString()
 		);
 	}
 

@@ -2,6 +2,7 @@ package shinhancard.sql.filter;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -11,7 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import shinhancard.common.io.ErrorCode;
+import shinhancard.common.io.ResponseCode;
 import shinhancard.common.io.ResponseVo;
 import shinhancard.common.wrapper.WrappedHttpServletRequest;
 import shinhancard.sql.properties.SQLInjectionProperties;
@@ -51,17 +52,17 @@ public class SQLInjectionFilter extends OncePerRequestFilter {
 		boolean isCookiesSafe = validateCookies(wrappedRequest);
 
 		if (!isParameterSafe) {
-			handleSqlInjectionViolation(response, ErrorCode.SQL_INJECTION_PARAMETER_DETECTED);
+			handleSqlInjectionViolation(response, ResponseCode.SQL_INJECTION_PARAMETER_DETECTED);
 			return;
 		}
 
 		if (!isBodySafe) {
-			handleSqlInjectionViolation(response, ErrorCode.SQL_INJECTION_BODY_DETECTED);
+			handleSqlInjectionViolation(response, ResponseCode.SQL_INJECTION_BODY_DETECTED);
 			return;
 		}
 
 		if (!isCookiesSafe) {
-			handleSqlInjectionViolation(response, ErrorCode.SQL_INJECTION_COOKIE_DETECTED);
+			handleSqlInjectionViolation(response, ResponseCode.SQL_INJECTION_COOKIE_DETECTED);
 			return;
 		}
 
@@ -111,16 +112,19 @@ public class SQLInjectionFilter extends OncePerRequestFilter {
 	/**
 	 * SQL 인젝션 감지 시 에러 응답을 처리합니다.
 	 *
-	 * @param response {@link HttpServletResponse} 객체
-	 * @param errorCode {@link ErrorCode} 에러 코드
+	 * @param response  {@link HttpServletResponse} 객체
+	 * @param responseCode {@link ResponseCode} 에러 코드
 	 * @throws IOException 입출력 예외
 	 */
-	private void handleSqlInjectionViolation(HttpServletResponse response, ErrorCode errorCode) throws IOException {
-		log.error("SQL 인젝션 예외 발생: {}", errorCode.getMessage());
-		// ErrorCode를 사용하여 에러 응답 생성
+	private void handleSqlInjectionViolation(HttpServletResponse response, ResponseCode responseCode) throws
+		IOException {
+		log.error("SQL 인젝션 예외 발생: {}", responseCode.getMessage());
+
 		response.sendError(
-			errorCode.getHttpStatus().value(),
-			ResponseVo.error(errorCode.getMessage(), errorCode.getHttpStatus()).toString()
+			responseCode.getHttpStatus().value(),
+			ResponseVo.error(responseCode, Optional.empty()).toString()
 		);
+
+		log.debug("SQL 인젝션 정책 위반: {} 응답을 전송했습니다.", responseCode);
 	}
 }

@@ -95,3 +95,144 @@ public class ResponseCachingFilter implements Filter {
 	}
 }
 ```
+
+## JsonProcessingException
+
+- JsonProcessingException 클래스는 JSON 처리 중 발생하는 예외를 나타내는 커스텀 예외 클래스입니다.
+
+### 생성자
+
+- JsonProcessingException(ResponseCode responseCode)
+- responseCode: 응답 코드(enum 타입, ResponseCode 사용)
+
+### 메서드
+
+- getHttpStatus(): HTTP 상태 코드를 반환합니다.
+- getErrorCode(): 오류 코드를 반환합니다.
+- getErrorMessage(): 오류 메시지를 반환합니다.
+
+```java
+try{
+	// JSON 처리 코드
+	}catch(JsonProcessingException e){
+HttpStatus status = e.getHttpStatus();
+String errorCode = e.getErrorCode();
+String errorMessage = e.getErrorMessage();
+// 예외 처리 코드
+}
+```
+
+## ResponseCode
+
+- ResponseCode 열거형은 응답 코드와 관련된 정보를 정의합니다. 각 응답 코드는 4자리 숫자 코드, 설명 메시지, HTTP 상태 코드를 포함합니다.
+
+### 열거형 상수
+
+- SUCCESS: 요청이 성공적으로 처리된 경우
+- CORS_ORIGIN_POLICY_VIOLATION: CORS 출처 정책 위반
+- CORS_METHOD_POLICY_VIOLATION: CORS 메서드 정책 위반
+- CORS_HEADERS_POLICY_VIOLATION: CORS 헤더 정책 위반
+- XSS_DETECTED: XSS 공격 감지
+- XSS_IN_PARAMETER: 요청 파라미터에서 XSS 공격 감지
+- XSS_IN_COOKIE: 쿠키에서 XSS 공격 감지
+- XSS_IN_BODY: 요청 본문에서 XSS 공격 감지
+- SQL_INJECTION_PARAMETER_DETECTED: 파라미터에서 SQL 인젝션 감지
+- SQL_INJECTION_BODY_DETECTED: 요청 본문에서 SQL 인젝션 감지
+- SQL_INJECTION_COOKIE_DETECTED: 쿠키에서 SQL 인젝션 감지
+- JSON_PROCESSING_ERROR: JSON 처리 중 오류 발생
+
+### 사용 예시
+
+```java
+ResponseCode responseCode = ResponseCode.SUCCESS;
+HttpStatus httpStatus = responseCode.getHttpStatus();
+String code = responseCode.getCode();
+String message = responseCode.getMessage();
+```
+
+## ResponseVo
+
+- ResponseVo 클래스는 응답 데이터를 표현하는 불변 객체입니다. 이 클래스는 성공 및 실패 응답을 포맷하는 데 사용됩니다.
+
+### 생성자
+
+- ResponseVo(DataHeader dataHeader, T dataBody)
+
+### 메서드
+
+- success(T data, ResponseCode responseCode, Optional<String> traceId): 성공 응답을 생성합니다.
+- error(ResponseCode responseCode, Optional<String> traceId): 에러 응답을 생성합니다.
+- generateTraceId(): traceId를 생성합니다. (기본적으로 UUID 기반)
+- toString(): JSON 형식의 문자열을 반환합니다.
+
+### DataHeader
+
+- DataHeader 레코드는 응답의 헤더 정보를 담고 있습니다.
+
+- resultCode: 결과 코드
+- resultMessage: 결과 메시지
+- traceId: trace ID
+
+### 사용 예시
+
+```java
+// 성공 응답 생성
+ResponseVo<String> successResponse = ResponseVo.success(
+	"데이터 내용",
+	ResponseCode.SUCCESS,
+	Optional.of("trace-id-12345")
+);
+
+// 에러 응답 생성
+ResponseVo<Void> errorResponse = ResponseVo.error(
+	ResponseCode.JSON_PROCESSING_ERROR,
+	Optional.empty()
+);
+
+// JSON 변환
+String jsonResponse = successResponse.toString();
+```
+
+### 입출력 예시
+
+#### 성공 응답
+
+- 입력:
+
+```java
+ResponseVo.success("성공적인 데이터",ResponseCode.SUCCESS, Optional.of("trace-id-12345"));
+```
+
+- 출력:
+
+```json
+{
+  "dataHeader": {
+    "resultCode": "0000",
+    "resultMessage": "요청이 성공적으로 처리되었습니다.",
+    "traceId": "trace-id-12345"
+  },
+  "dataBody": "성공적인 데이터"
+}
+```
+
+#### 에러 응답
+
+- 입력:
+
+```java
+ResponseVo.error(ResponseCode.JSON_PROCESSING_ERROR, Optional.empty());
+```
+
+- 출력:
+
+```json
+{
+  "dataHeader": {
+    "resultCode": "4001",
+    "resultMessage": "JSON 처리 중 오류가 발생했습니다.",
+    "traceId": "생성된 traceId"
+  },
+  "dataBody": null
+}
+```

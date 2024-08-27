@@ -6,6 +6,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
-import shinhancard.common.io.ErrorCode;
+import shinhancard.common.io.ResponseCode;
 import shinhancard.common.io.ResponseVo;
 
 /**
@@ -90,19 +91,19 @@ public class CorsFilter extends OncePerRequestFilter {
 			// 출처, 메서드, 헤더 검증
 			if (!isOriginAllowed(request.getHeader(HttpHeaders.ORIGIN), corsConfig.getAllowedOrigins())) {
 				log.error("CORS 출처 정책 위반: 허용되지 않은 출처입니다. 요청 출처: {}", request.getHeader(HttpHeaders.ORIGIN));
-				handleCorsViolation(response, ErrorCode.CORS_ORIGIN_POLICY_VIOLATION);
+				handleCorsViolation(response, ResponseCode.CORS_ORIGIN_POLICY_VIOLATION);
 				return;
 			}
 
 			if (!isMethodAllowed(request.getMethod(), corsConfig.getAllowedMethods())) {
 				log.error("CORS 메서드 정책 위반: 허용되지 않은 메서드입니다. 요청 메서드: {}", request.getMethod());
-				handleCorsViolation(response, ErrorCode.CORS_METHOD_POLICY_VIOLATION);
+				handleCorsViolation(response, ResponseCode.CORS_METHOD_POLICY_VIOLATION);
 				return;
 			}
 
 			if (!areHeadersAllowed(request, corsConfig.getAllowedHeaders())) {
 				log.error("CORS 헤더 정책 위반: 허용되지 않은 헤더입니다. 요청 헤더: {}", Collections.list(request.getHeaderNames()));
-				handleCorsViolation(response, ErrorCode.CORS_HEADERS_POLICY_VIOLATION);
+				handleCorsViolation(response, ResponseCode.CORS_HEADERS_POLICY_VIOLATION);
 				return;
 			}
 		}
@@ -201,15 +202,19 @@ public class CorsFilter extends OncePerRequestFilter {
 	}
 
 	/**
-	 * CORS 정책 위반 시 에러 응답을 처리합니다.
+	 * CORS 정책 위반 시 에러 응답을 생성합니다.
 	 *
-	 * @param response  {@link HttpServletResponse} 객체
-	 * @param errorCode 에러 코드
-	 * @throws IOException 입출력 예외
+	 * @param response   {@link HttpServletResponse} 객체
+	 * @param responseCode 에러 코드
+	 * @throws IOException 입출력 처리 중 발생할 수 있는 예외
 	 */
-	private void handleCorsViolation(HttpServletResponse response, ErrorCode errorCode) throws IOException {
-		log.error("CORS 정책 위반: {}", errorCode.getMessage());
-		response.sendError(errorCode.getHttpStatus().value(),
-			ResponseVo.error(errorCode.getMessage(), errorCode.getHttpStatus()).toString());
+	private void handleCorsViolation(HttpServletResponse response, ResponseCode responseCode) throws IOException {
+
+		response.sendError(
+			responseCode.getHttpStatus().value(),
+			ResponseVo.error(responseCode, Optional.empty()).toString()
+		);
+
+		log.debug("CORS 정책 위반: {} 응답을 전송했습니다.", responseCode);
 	}
 }
