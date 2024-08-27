@@ -1,1 +1,1 @@
-shinhancard.cors.config.CsrfAutoConfiguration
+shinhancard.csrf.config.CsrfAutoConfiguration
